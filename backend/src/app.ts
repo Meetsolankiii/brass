@@ -28,7 +28,7 @@ app.use(
       const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
       const isLocalhost = origin && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 
-      if (!origin || allowedOrigins.includes(origin) || (isDevelopment && isLocalhost)) {
+      if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin) || (isDevelopment && isLocalhost)) {
         callback(null, true);
       } else {
         console.warn(`[CORS Blocked] Origin: "${origin}". Allowed origins: [${allowedOrigins.join(', ')}]`);
