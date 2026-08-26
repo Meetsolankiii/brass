@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Rajnish Industries — Full-Stack Client Website
 
 ## 🚀 Quick Start
@@ -142,3 +143,6 @@ npm run build
 **Backend**: Node.js · Express · TypeScript · Prisma ORM · PostgreSQL · JWT · Multer
 
 **Frontend**: React 18 · TypeScript · Vite · Tailwind CSS v3 · Framer Motion · TanStack Query · Zustand · React Hook Form · Zod
+=======
+# brass
+>>>>>>> 317a98573a2ff7513d210afd6316b4452c7a6420
