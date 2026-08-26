@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { useAuthStore } from '@/store/auth.store';
 
-const BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const BASE_URL = import.meta.env.PROD 
+  ? 'https://brass-q9gb.onrender.com/api' 
+  : (import.meta.env.VITE_API_URL || 'http://localhost:5000/api');
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -16,6 +18,28 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Helper to prefix relative upload paths with Render backend URL in production
+function prefixUploadUrls(obj: any): any {
+  if (!obj) return obj;
+  if (typeof obj === 'string') {
+    if (obj.startsWith('/api/uploads/')) {
+      return `https://brass-q9gb.onrender.com${obj}`;
+    }
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(prefixUploadUrls);
+  }
+  if (typeof obj === 'object') {
+    const res: any = {};
+    for (const key in obj) {
+      res[key] = prefixUploadUrls(obj[key]);
+    }
+    return res;
+  }
+  return obj;
+}
+
 // Refresh on 401
 let isRefreshing = false;
 let queue: Array<{ resolve: (t: string) => void; reject: (e: Error) => void }> = [];
@@ -25,7 +49,12 @@ const drainQueue = (err: Error | null, token: string | null) => {
 };
 
 api.interceptors.response.use(
-  (r) => r,
+  (r) => {
+    if (import.meta.env.PROD && r.data) {
+      r.data = prefixUploadUrls(r.data);
+    }
+    return r;
+  },
   async (error) => {
     const orig = error.config;
     if (error.response?.status === 401 && !orig._retry) {
