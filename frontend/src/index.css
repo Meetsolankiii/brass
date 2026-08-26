@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply font-body text-gray-800 bg-white antialiased; }
+  h1, h2, h3, h4, h5, h6 { @apply font-heading; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-gray-100; }
+  ::-webkit-scrollbar-thumb { @apply bg-primary-400 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-primary-DEFAULT; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .container-xl { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+  .section-padding { @apply py-16 md:py-24; }
+
+  .section-badge { @apply inline-block bg-primary-50 text-primary-DEFAULT text-sm font-semibold px-4 py-1.5 rounded-full mb-4 border border-primary-100; }
+  .section-title { @apply font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-dark-900 leading-tight; }
+  .section-subtitle { @apply text-lg text-gray-500 mt-4 max-w-2xl; }
+
+  .gradient-text { @apply bg-gradient-to-r from-primary-DEFAULT to-accent-DEFAULT bg-clip-text text-transparent; }
+
+  .card-hover { @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-premium-lg; }
+
+  .btn { @apply inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2; }
+  .btn-primary { @apply btn bg-primary-DEFAULT text-white hover:bg-primary-700 focus:ring-primary-DEFAULT shadow-md hover:shadow-glow-blue active:scale-95; }
+  .btn-accent { @apply btn bg-accent-DEFAULT text-dark-900 hover:bg-accent-600 focus:ring-accent-DEFAULT shadow-md hover:shadow-glow-gold active:scale-95; }
+  .btn-outline { @apply btn border-2 border-primary-DEFAULT text-primary-DEFAULT hover:bg-primary-DEFAULT hover:text-white focus:ring-primary-DEFAULT active:scale-95; }
+  .btn-ghost { @apply btn text-primary-DEFAULT hover:bg-primary-50 focus:ring-primary-DEFAULT; }
+  .btn-sm { @apply px-4 py-2 text-sm; }
+  .btn-md { @apply px-6 py-3 text-base; }
+  .btn-lg { @apply px-8 py-4 text-lg; }
+
+  .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 1000px 100%; animation: shimmer 1.5s infinite; @apply rounded-lg; }
+
+  .grid-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231a6ea8' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+  .hero-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+
+  /* Admin */
+  .admin-sidebar { @apply fixed top-0 left-0 h-screen bg-dark-900 transition-all duration-300 z-40 flex flex-col; }
+  .admin-content { @apply min-h-screen bg-gray-50; }
+  .admin-nav-item { @apply flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-sm font-medium; }
+  .admin-nav-item-active { @apply bg-primary-DEFAULT text-white shadow-glow-blue; }
+  .admin-nav-item-inactive { @apply text-gray-400 hover:bg-dark-700 hover:text-white; }
+  .aspect-product { aspect-ratio: 4/3; }
+
+  /* Form inputs */
+  .form-input { @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-DEFAULT focus:border-transparent transition-all bg-white; }
+  .form-label { @apply block text-sm font-semibold text-gray-700 mb-1.5; }
+  .form-error { @apply text-red-500 text-xs mt-1; }
+}
