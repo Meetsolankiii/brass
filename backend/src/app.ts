@@ -12,6 +12,9 @@ import { notFound, errorHandler } from './middleware/error.middleware';
 
 const app = express();
 
+// Trust proxy for express-rate-limit behind reverse proxies (like Render)
+app.set('trust proxy', 1);
+
 // ── Security headers ────────────────────────────────────────
 app.use(
   helmet({
