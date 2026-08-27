@@ -67,14 +67,15 @@ export async function login(req: Request, res: Response): Promise<void> {
 
     console.log(`\n🔑 [MFA OTP] Generated OTP for user "${admin.username}": ${otp}\n`);
 
-    // Send email via Nodemailer
-    try {
-      await sendOtpEmail(otp, admin.email);
-      console.log(`✉️ OTP email sent successfully to ${admin.email}`);
-    } catch (emailError) {
-      console.error('⚠️ Failed to send OTP email:', emailError);
-      console.log(`👉 MFA OTP for login: ${otp} (Please check this console log as email delivery failed)`);
-    }
+    // Send email via Nodemailer asynchronously so we don't block the HTTP response on slow SMTP servers/timeouts
+    sendOtpEmail(otp, admin.email)
+      .then(() => {
+        console.log(`✉️ OTP email sent successfully to ${admin.email}`);
+      })
+      .catch((emailError) => {
+        console.error('⚠️ Failed to send OTP email:', emailError);
+        console.log(`👉 MFA OTP for login: ${otp} (Please check this console log as email delivery failed)`);
+      });
 
     // Generate a temporary JWT token for 2FA verification
     const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'fallback_access_secret';
@@ -220,14 +221,15 @@ export async function forgotPassword(req: Request, res: Response): Promise<void>
 
     console.log(`\n🔑 [MFA OTP] Generated forgot-password OTP for user "${admin.username}": ${otp}\n`);
 
-    // Send email via Nodemailer
-    try {
-      await sendOtpEmail(otp, admin.email);
-      console.log(`✉️ Forgot-password OTP email sent successfully to ${admin.email}`);
-    } catch (emailError) {
-      console.error('⚠️ Failed to send forgot-password OTP email:', emailError);
-      console.log(`👉 MFA OTP for reset: ${otp} (Please check this console log as email delivery failed)`);
-    }
+    // Send email via Nodemailer asynchronously so we don't block the HTTP response on slow SMTP servers/timeouts
+    sendOtpEmail(otp, admin.email)
+      .then(() => {
+        console.log(`✉️ Forgot-password OTP email sent successfully to ${admin.email}`);
+      })
+      .catch((emailError) => {
+        console.error('⚠️ Failed to send forgot-password OTP email:', emailError);
+        console.log(`👉 MFA OTP for reset: ${otp} (Please check this console log as email delivery failed)`);
+      });
 
     // Generate a temporary JWT token for reset verification
     const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'fallback_access_secret';
