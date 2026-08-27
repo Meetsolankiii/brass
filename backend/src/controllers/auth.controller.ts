@@ -25,6 +25,41 @@ const transporter = nodemailer.createTransport({
 });
 
 async function sendOtpEmail(otp: string, toEmail: string): Promise<void> {
+  const resendApiKey = process.env.RESEND_API_KEY;
+
+  if (resendApiKey) {
+    console.log(`📡 Sending OTP email via Resend API to ${toEmail}...`);
+    const response = await (globalThis as any).fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'onboarding@resend.dev',
+        to: toEmail,
+        subject: 'Your 2FA Login OTP Code',
+        html: `
+          <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 500px;">
+            <h2 style="color: #3b82f6;">Owner Portal Login Verification</h2>
+            <p>You are attempting to log in to the Owner portal. Use the following One-Time Password (OTP) to complete your login:</p>
+            <div style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #1e3a8a; padding: 15px 0; text-align: center; background-color: #f3f4f6; border-radius: 8px; margin: 20px 0;">
+              ${otp}
+            </div>
+            <p style="color: #ef4444; font-size: 13px;">This code is valid for 5 minutes. If you did not request this code, please ignore this email or secure your password.</p>
+          </div>
+        `,
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Resend API failed: ${response.statusText} - ${errText}`);
+    }
+    return;
+  }
+
+  // Fallback to Nodemailer SMTP (will time out on Render free tier, but works locally)
   const mailOptions = {
     from: '"Owner Portal" <testingfordemo2647@gmail.com>',
     to: toEmail,
