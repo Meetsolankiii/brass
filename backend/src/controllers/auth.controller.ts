@@ -359,6 +359,15 @@ export async function updateAccount(req: AuthRequest, res: Response): Promise<vo
     const { username, email, password } = req.body;
     const userId = req.user!.id;
 
+    // Verify user exists (helps with stale session tokens after database reset)
+    const userExists = await prisma.adminUser.findUnique({
+      where: { id: userId },
+    });
+    if (!userExists) {
+      errorResponse(res, 'User not found. Please log out and log in again.', 401);
+      return;
+    }
+
     // Validate inputs
     if (!username && !email && !password) {
       errorResponse(res, 'At least one field (username, email, password) must be provided', 400);
