@@ -26,14 +26,18 @@ const transporter = nodemailer.createTransport({
 
 async function sendOtpEmail(otp: string, toEmail: string): Promise<void> {
   const resendApiKey = process.env.RESEND_API_KEY;
+  const emailFrom = process.env.EMAIL_FROM || 'onboarding@resend.dev';
 
-  // Resend sandbox mode only allows sending to verified owner emails.
-  // We automatically route to the verified emails if toEmail is not one of them.
-  const verifiedEmails = ['solankimeet5678@gmail.com', 'solankimeetu26407@gmail.com'];
   let targetEmail = toEmail;
-  if (!verifiedEmails.includes(toEmail.toLowerCase())) {
-    console.log(`⚠️ Email "${toEmail}" is unverified. Routing OTP to verified owner emails.`);
-    targetEmail = verifiedEmails.join(', ');
+
+  // Sandbox routing: only redirect to developer verified emails if we are using the default onboarding@resend.dev address.
+  // In production (when EMAIL_FROM is configured to a custom domain like noreply@clientwebsite.com), the OTP is sent directly to the client's email.
+  if (emailFrom === 'onboarding@resend.dev') {
+    const verifiedEmails = ['solankimeet5678@gmail.com', 'solankimeetu26407@gmail.com'];
+    if (!verifiedEmails.includes(toEmail.toLowerCase())) {
+      console.log(`⚠️ Sandbox Mode: Email "${toEmail}" is unverified. Routing OTP to verified owner emails.`);
+      targetEmail = verifiedEmails.join(', ');
+    }
   }
 
   if (resendApiKey) {
@@ -45,7 +49,7 @@ async function sendOtpEmail(otp: string, toEmail: string): Promise<void> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'onboarding@resend.dev',
+        from: emailFrom,
         to: targetEmail.includes(',') ? targetEmail.split(', ') : targetEmail,
         subject: 'Your 2FA Login OTP Code',
         html: `
@@ -70,7 +74,7 @@ async function sendOtpEmail(otp: string, toEmail: string): Promise<void> {
 
   // Fallback to Nodemailer SMTP (will time out on Render free tier, but works locally)
   const mailOptions = {
-    from: '"Owner Portal" <testingfordemo2647@gmail.com>',
+    from: `"Owner Portal" <${emailFrom.includes('@') ? emailFrom : 'testingfordemo2647@gmail.com'}>`,
     to: targetEmail,
     subject: 'Your 2FA Login OTP Code',
     text: `Your one-time password (OTP) for login is: ${otp}. It is valid for 5 minutes.`,
