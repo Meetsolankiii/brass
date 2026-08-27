@@ -24,50 +24,71 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+async function sendSingleEmail(resendApiKey: string, emailFrom: string, recipient: string, otp: string): Promise<void> {
+  const response = await (globalThis as any).fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${resendApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: emailFrom,
+      to: recipient,
+      subject: 'Your 2FA Login OTP Code',
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 500px;">
+          <h2 style="color: #3b82f6;">Owner Portal Login Verification</h2>
+          <p>You are attempting to log in to the Owner portal. Use the following One-Time Password (OTP) to complete your login:</p>
+          <div style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #1e3a8a; padding: 15px 0; text-align: center; background-color: #f3f4f6; border-radius: 8px; margin: 20px 0;">
+            ${otp}
+          </div>
+          <p style="color: #ef4444; font-size: 13px;">This code is valid for 5 minutes. If you did not request this code, please ignore this email or secure your password.</p>
+        </div>
+      `,
+    }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Resend API failed: ${response.statusText} - ${errText}`);
+  }
+}
+
 async function sendOtpEmail(otp: string, toEmail: string): Promise<void> {
   const resendApiKey = process.env.RESEND_API_KEY;
   const emailFrom = process.env.EMAIL_FROM || 'onboarding@resend.dev';
 
-  let targetEmail = toEmail;
+  // Determine list of target emails to try
+  const targetEmails: string[] = [];
 
-  // Sandbox routing: only redirect to developer verified emails if we are using the default onboarding@resend.dev address.
-  // In production (when EMAIL_FROM is configured to a custom domain like noreply@clientwebsite.com), the OTP is sent directly to the client's email.
   if (emailFrom === 'onboarding@resend.dev') {
-    const verifiedEmails = ['solankimeet5678@gmail.com', 'solankimeetu26407@gmail.com'];
-    if (!verifiedEmails.includes(toEmail.toLowerCase())) {
-      console.log(`⚠️ Sandbox Mode: Email "${toEmail}" is unverified. Routing OTP to verified owner emails.`);
-      targetEmail = verifiedEmails.join(', ');
+    // Sandbox mode: try to send to the updated email, solankimeetu26407@gmail.com, and solankimeet5678@gmail.com
+    const candidateEmails = [toEmail.toLowerCase(), 'solankimeetu26407@gmail.com', 'solankimeet5678@gmail.com'];
+    for (const email of candidateEmails) {
+      if (email && !email.includes('example.com') && email !== 'admin' && email !== 'owner' && !targetEmails.includes(email)) {
+        targetEmails.push(email);
+      }
     }
+  } else {
+    // Production mode: send only to the configured recipient email
+    targetEmails.push(toEmail);
   }
 
   if (resendApiKey) {
-    console.log(`📡 Sending OTP email via Resend API to ${targetEmail}...`);
-    const response = await (globalThis as any).fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: emailFrom,
-        to: targetEmail.includes(',') ? targetEmail.split(', ') : targetEmail,
-        subject: 'Your 2FA Login OTP Code',
-        html: `
-          <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 500px;">
-            <h2 style="color: #3b82f6;">Owner Portal Login Verification</h2>
-            <p>You are attempting to log in to the Owner portal. Use the following One-Time Password (OTP) to complete your login:</p>
-            <div style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #1e3a8a; padding: 15px 0; text-align: center; background-color: #f3f4f6; border-radius: 8px; margin: 20px 0;">
-              ${otp}
-            </div>
-            <p style="color: #ef4444; font-size: 13px;">This code is valid for 5 minutes. If you did not request this code, please ignore this email or secure your password.</p>
-          </div>
-        `,
-      }),
-    });
+    let successCount = 0;
+    for (const email of targetEmails) {
+      try {
+        console.log(`📡 Sending OTP email via Resend API to ${email}...`);
+        await sendSingleEmail(resendApiKey, emailFrom, email, otp);
+        console.log(`✉️ OTP email sent successfully to ${email}`);
+        successCount++;
+      } catch (err: any) {
+        console.warn(`⚠️ Failed to send OTP email to ${email}: ${err.message}`);
+      }
+    }
 
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(`Resend API failed: ${response.statusText} - ${errText}`);
+    if (successCount === 0) {
+      throw new Error('All Resend email delivery attempts failed.');
     }
     return;
   }
@@ -75,7 +96,7 @@ async function sendOtpEmail(otp: string, toEmail: string): Promise<void> {
   // Fallback to Nodemailer SMTP (will time out on Render free tier, but works locally)
   const mailOptions = {
     from: `"Owner Portal" <${emailFrom.includes('@') ? emailFrom : 'testingfordemo2647@gmail.com'}>`,
-    to: targetEmail,
+    to: targetEmails.join(', '),
     subject: 'Your 2FA Login OTP Code',
     text: `Your one-time password (OTP) for login is: ${otp}. It is valid for 5 minutes.`,
     html: `
