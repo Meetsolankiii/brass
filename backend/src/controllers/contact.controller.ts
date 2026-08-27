@@ -56,82 +56,31 @@ export async function submitContactForm(req: Request, res: Response): Promise<vo
       return;
     }
 
-    // Retrieve owner/admin email dynamically from the database
-    const ownerOrAdmin = await prisma.adminUser.findFirst({
-      where: {
-        OR: [
-          { role: 'owner', isActive: true },
-          { username: 'admin', isActive: true }
-        ]
+    // Forward to Formspree asynchronously in the background
+    (globalThis as any).fetch('https://formspree.io/f/mdeonypl', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
       },
-      orderBy: { role: 'desc' } // Prioritize owner over admin
-    });
-    let toEmail = ownerOrAdmin?.email;
-    if (!toEmail || toEmail === 'owner@example.com' || toEmail === 'admin@example.com') {
-      toEmail = 'solankimeetu26407@gmail.com';
-    }
-
-    const mailOptions = {
-      from: '"Chetan Brass Contact Form" <testingfordemo2647@gmail.com>',
-      to: toEmail,
-      subject: `New Customer Inquiry: ${subject}`,
-      text: `
-        You have received a new contact form submission on Chetan Brass Industries website.
-
-        Customer Details:
-        - Name: ${name}
-        - Email: ${email}
-        - Phone: ${phone || 'Not provided'}
-        - Company: ${company || 'Not provided'}
-        
-        Subject: ${subject}
-        
-        Message:
-        ${message}
-      `,
-      html: `
-        <div style="font-family: Arial, sans-serif; padding: 25px; border: 1px solid #e2e8f0; border-radius: 12px; max-width: 600px; color: #1e293b;">
-          <h2 style="color: #1a6ea8; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; margin-top: 0;">New Contact Form Submission</h2>
-          <p style="font-size: 15px; color: #64748b;">A customer has submitted a message via the website contact form. Here are the details:</p>
-          
-          <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-            <tr style="background-color: #f8fafc;">
-              <td style="padding: 10px; font-weight: bold; width: 30%; border-bottom: 1px solid #e2e8f0;">Customer Name</td>
-              <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${name}</td>
-            </tr>
-            <tr>
-              <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #e2e8f0;">Email Address</td>
-              <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;"><a href="mailto:${email}" style="color: #1a6ea8; text-decoration: none;">${email}</a></td>
-            </tr>
-            <tr style="background-color: #f8fafc;">
-              <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #e2e8f0;">Phone Number</td>
-              <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${phone ? `<a href="tel:${phone}" style="color: #1a6ea8; text-decoration: none;">${phone}</a>` : '<em>Not provided</em>'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #e2e8f0;">Company Name</td>
-              <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${company || '<em>Not provided</em>'}</td>
-            </tr>
-            <tr style="background-color: #f8fafc;">
-              <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #e2e8f0;">Subject</td>
-              <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 500;">${subject}</td>
-            </tr>
-          </table>
-
-          <div style="background-color: #f1f5f9; padding: 15px; border-radius: 8px; border-left: 4px solid #1a6ea8;">
-            <strong style="display: block; margin-bottom: 6px;">Customer Message:</strong>
-            <p style="margin: 0; line-height: 1.6; white-space: pre-wrap; font-size: 14px; color: #334155;">${message}</p>
-          </div>
-          
-          <p style="font-size: 11px; color: #94a3b8; margin-top: 25px; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-            This email was sent automatically from the Chetan Brass Industries web server.
-          </p>
-        </div>
-      `,
-    };
-
-    sendContactEmail(toEmail, mailOptions)
-      .then(() => console.log('✉️ Contact form email sent successfully'))
-      .catch((err) => console.error('❌ Failed to send contact email:', err));
+      body: JSON.stringify({
+        _subject: `New Customer Inquiry: ${subject}`,
+        name,
+        email,
+        phone: phone || 'Not provided',
+        company: company || 'Not provided',
+        subject,
+        message,
+      }),
+    })
+      .then((response: any) => {
+        if (response.ok) {
+          console.log('✉️ Formspree contact form email sent successfully');
+        } else {
+          console.error('❌ Formspree failed to send contact form email');
+        }
+      })
+      .catch((err: any) => console.error('❌ Failed to forward to Formspree:', err));
 
     successResponse(res, null, 'Message sent successfully');
   } catch (error) {
