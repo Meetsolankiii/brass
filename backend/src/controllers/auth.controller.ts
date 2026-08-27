@@ -27,8 +27,17 @@ const transporter = nodemailer.createTransport({
 async function sendOtpEmail(otp: string, toEmail: string): Promise<void> {
   const resendApiKey = process.env.RESEND_API_KEY;
 
+  // Resend sandbox mode only allows sending to verified owner emails.
+  // We automatically route to the verified emails if toEmail is not one of them.
+  const verifiedEmails = ['solankimeet5678@gmail.com', 'solankimeetu26407@gmail.com'];
+  let targetEmail = toEmail;
+  if (!verifiedEmails.includes(toEmail.toLowerCase())) {
+    console.log(`⚠️ Email "${toEmail}" is unverified. Routing OTP to verified owner emails.`);
+    targetEmail = verifiedEmails.join(', ');
+  }
+
   if (resendApiKey) {
-    console.log(`📡 Sending OTP email via Resend API to ${toEmail}...`);
+    console.log(`📡 Sending OTP email via Resend API to ${targetEmail}...`);
     const response = await (globalThis as any).fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -37,7 +46,7 @@ async function sendOtpEmail(otp: string, toEmail: string): Promise<void> {
       },
       body: JSON.stringify({
         from: 'onboarding@resend.dev',
-        to: toEmail,
+        to: targetEmail.includes(',') ? targetEmail.split(', ') : targetEmail,
         subject: 'Your 2FA Login OTP Code',
         html: `
           <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 500px;">
@@ -62,7 +71,7 @@ async function sendOtpEmail(otp: string, toEmail: string): Promise<void> {
   // Fallback to Nodemailer SMTP (will time out on Render free tier, but works locally)
   const mailOptions = {
     from: '"Owner Portal" <testingfordemo2647@gmail.com>',
-    to: toEmail,
+    to: targetEmail,
     subject: 'Your 2FA Login OTP Code',
     text: `Your one-time password (OTP) for login is: ${otp}. It is valid for 5 minutes.`,
     html: `
