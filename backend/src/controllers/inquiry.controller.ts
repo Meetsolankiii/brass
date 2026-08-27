@@ -75,12 +75,18 @@ export async function submitInquiryForm(req: Request, res: Response): Promise<vo
       }
     }
 
-    // Retrieve owner email dynamically from the database
-    const owner = await prisma.adminUser.findFirst({
-      where: { role: 'owner', isActive: true },
+    // Retrieve owner/admin email dynamically from the database
+    const ownerOrAdmin = await prisma.adminUser.findFirst({
+      where: {
+        OR: [
+          { role: 'owner', isActive: true },
+          { username: 'admin', isActive: true }
+        ]
+      },
+      orderBy: { role: 'desc' } // Prioritize owner over admin
     });
-    let toEmail = owner?.email;
-    if (!toEmail || toEmail === 'owner@example.com') {
+    let toEmail = ownerOrAdmin?.email;
+    if (!toEmail || toEmail === 'owner@example.com' || toEmail === 'admin@example.com') {
       toEmail = 'solankimeetu26407@gmail.com';
     }
 
