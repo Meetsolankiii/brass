@@ -67,7 +67,7 @@ export default function Navbar() {
           <Link to="/" className="flex items-center group">
             <div className="bg-white px-3 py-1.5 rounded-xl h-11 md:h-12 flex items-center shadow-md border border-white/10 group-hover:scale-[1.02] transition-transform">
               <img
-                src="/images/hero/cbi logo.png"
+                src="/images/hero/cbi-logo.png"
                 alt="Chetan Brass Industries"
                 className="h-full w-auto object-contain"
               />
