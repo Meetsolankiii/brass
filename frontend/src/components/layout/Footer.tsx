@@ -1,15 +1,28 @@
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Factory, Phone, Mail, MapPin, Linkedin, Facebook, Instagram, Youtube, ArrowRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { settingsApi, categoriesApi } from '@/services/api';
 import type { SiteSettings, Category } from '@/types';
 
 export default function Footer() {
+  const navigate = useNavigate();
   const { data: settings } = useQuery({ queryKey: ['settings'], queryFn: () => settingsApi.getAll().then((r) => r.data.data as SiteSettings), staleTime: 10 * 60 * 1000 });
   const { data: categories } = useQuery({ queryKey: ['categories'], queryFn: () => categoriesApi.getAll().then((r) => r.data.data as Category[]), staleTime: 10 * 60 * 1000 });
 
   const siteName = settings?.site_name || '[Client Name] Industries';
   const tagline = settings?.site_tagline || 'Precision. Quality. Reliability.';
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') {
+        e.preventDefault();
+        navigate('/owner/login');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [navigate]);
 
   const quickLinks = [
     { to: '/', label: 'Home' }, { to: '/about', label: 'About Us' },
@@ -30,13 +43,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-DEFAULT to-primary-900 rounded-xl flex items-center justify-center">
-                <Factory size={20} className="text-white" />
-              </div>
-              <div>
-                <div className="font-heading font-bold text-white text-base">{siteName}</div>
-                <div className="text-accent-DEFAULT text-xs">{tagline}</div>
+            <Link to="/" className="inline-flex mb-5">
+              <div className="bg-white px-3 py-1.5 rounded-xl h-11 flex items-center shadow-md border border-white/10 hover:scale-[1.02] transition-transform">
+                <img
+                  src="/images/hero/cbi logo.png"
+                  alt="Chetan Brass Industries"
+                  className="h-full w-auto object-contain"
+                />
               </div>
             </Link>
             <p className="text-sm leading-relaxed mb-6">{settings?.site_description || 'Leading supplier of industrial machinery, precision parts, and safety equipment.'}</p>
@@ -141,11 +154,19 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-dark-700">
         <div className="container-xl py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-          <span>© {new Date().getFullYear()} {siteName}. All rights reserved.</span>
+          <span>
+            © {new Date().getFullYear()} {siteName}. All rights reserved
+            <span
+              onClick={() => navigate('/owner/login')}
+              className="cursor-default select-none inline-block px-0.5 hover:text-white active:text-accent-DEFAULT"
+              style={{ userSelect: 'none' }}
+            >
+              .
+            </span>
+          </span>
           <div className="flex gap-4">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-white transition-colors">Terms & Conditions</a>
-            <Link to="/owner/login" className="hover:text-white transition-colors">Owner Login</Link>
           </div>
         </div>
       </div>

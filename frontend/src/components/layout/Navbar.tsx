@@ -64,13 +64,13 @@ export default function Navbar() {
       <nav className="container-xl">
         <div className="flex items-center justify-between h-18 md:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-DEFAULT to-primary-900 rounded-xl flex items-center justify-center shadow-glow-blue group-hover:scale-105 transition-transform">
-              <Factory size={22} className="text-white" />
-            </div>
-            <div className="hidden sm:block">
-              <div className="font-heading font-bold text-white text-lg leading-tight">{siteName.split(' ').slice(0, -1).join(' ')}</div>
-              <div className="text-accent-DEFAULT text-xs font-semibold tracking-wider uppercase">{siteName.split(' ').slice(-1)}</div>
+          <Link to="/" className="flex items-center group">
+            <div className="bg-white px-3 py-1.5 rounded-xl h-11 md:h-12 flex items-center shadow-md border border-white/10 group-hover:scale-[1.02] transition-transform">
+              <img
+                src="/images/hero/cbi logo.png"
+                alt="Chetan Brass Industries"
+                className="h-full w-auto object-contain"
+              />
             </div>
           </Link>
 
@@ -133,14 +133,6 @@ export default function Navbar() {
 
           {/* CTA */}
           <div className="hidden lg:flex items-center gap-4">
-            <Link
-              to="/owner/login"
-              className="relative overflow-hidden px-4 py-2 rounded-xl text-xs font-semibold text-white border border-primary-500/30 bg-primary-950/40 hover:bg-primary-900/60 hover:border-primary-500 hover:shadow-glow-blue transition-all duration-300 transform hover:scale-[1.04] active:scale-[0.97] flex items-center gap-1.5 group/btn"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.7)]" />
-              Owner Login
-            </Link>
-            <span className="w-px h-4 bg-dark-600" />
             <a
               href={`tel:${settingsData?.contact_phone || ''}`}
               className="flex items-center gap-2 text-gray-300 hover:text-accent-DEFAULT text-sm transition-all duration-250 transform hover:scale-[1.02]"
@@ -198,9 +190,6 @@ export default function Navbar() {
                   )}
                 </div>
               ))}
-              <Link to="/owner/login" className="block px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-dark-800 transition-colors text-center border border-dark-600 mt-3">
-                Owner Login
-              </Link>
               <Link to="/contact" className="btn-accent btn-md rounded-lg mt-2 text-center">Get Quote</Link>
             </div>
           </motion.div>
