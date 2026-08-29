@@ -155,14 +155,13 @@ export default function Footer() {
       <div className="border-t border-dark-700">
         <div className="container-xl py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
           <span>
-            © {new Date().getFullYear()} {siteName}. All rights reserved
             <span
               onClick={() => navigate('/owner/login')}
-              className="cursor-default select-none inline-block px-0.5 hover:text-white active:text-accent-DEFAULT"
-              style={{ userSelect: 'none' }}
+              className="cursor-default select-none"
             >
-              .
-            </span>
+              © {new Date().getFullYear()}
+            </span>{' '}
+            {siteName}. All rights reserved.
           </span>
           <div className="flex gap-4">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
