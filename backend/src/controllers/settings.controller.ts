@@ -40,6 +40,20 @@ export async function uploadLogo(req: AuthRequest, res: Response): Promise<void>
       errorResponse(res, 'No file uploaded', 400);
       return;
     }
+
+    // Automatically crop uploaded logo image on the server using Python PIL
+    try {
+      const { execSync } = require('child_process');
+      const path = require('path');
+      const scriptPath = path.join(process.cwd(), 'src', 'utils', 'crop_image.py');
+      const filePath = req.file.path;
+      console.log(`[Auto-Crop] Running logo cropping on: ${filePath}`);
+      execSync(`python "${scriptPath}" "${filePath}"`);
+      console.log('[Auto-Crop] Logo cropped successfully');
+    } catch (cropError) {
+      console.error('[Auto-Crop] Failed to crop logo:', cropError);
+    }
+
     const logoPath = `/api/uploads/logo/${req.file.filename}`;
     
     // Update database

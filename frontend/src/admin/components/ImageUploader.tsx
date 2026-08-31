@@ -45,7 +45,7 @@ export default function ImageUploader({ onFilesSelected, multiple = false, exist
           <div className="flex flex-wrap gap-3">
             {existingImages.map((img) => (
               <div key={img.id} className="relative group w-24 h-24 rounded-xl overflow-hidden border-2 border-gray-200">
-                <img src={img.url} alt={img.altText || ''} className="w-full h-full object-cover" />
+                <img src={img.url} alt={img.altText || ''} className="w-full h-full object-contain bg-gray-50" />
                 {onDeleteExisting && (
                   <button onClick={() => onDeleteExisting(img.id)}
                     className="absolute inset-0 bg-red-500/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -79,7 +79,7 @@ export default function ImageUploader({ onFilesSelected, multiple = false, exist
           <div className="flex flex-wrap gap-3">
             {previews.map((p, i) => (
               <div key={p.url} className="relative group w-24 h-24 rounded-xl overflow-hidden border-2 border-primary-200">
-                <img src={p.url} alt="" className="w-full h-full object-cover" />
+                <img src={p.url} alt="" className="w-full h-full object-contain bg-gray-50" />
                 <button onClick={(e) => { e.stopPropagation(); removePreview(i); }}
                   className="absolute inset-0 bg-red-500/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <X size={18} className="text-white" />
