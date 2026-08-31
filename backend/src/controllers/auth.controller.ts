@@ -314,8 +314,7 @@ export async function resetPassword(req: Request, res: Response): Promise<void> 
       return;
     }
 
-    const isTestOtp = otp === '123456';
-    const isOtpValid = (admin.otpCode && admin.otpExpiresAt && admin.otpCode === otp && new Date() <= admin.otpExpiresAt) || isTestOtp;
+    const isOtpValid = !!(admin.otpCode && admin.otpExpiresAt && admin.otpCode === otp && new Date() <= admin.otpExpiresAt);
 
     if (!isOtpValid) {
       errorResponse(res, 'Invalid or expired OTP', 401);
@@ -374,8 +373,7 @@ export async function verifyResetOtp(req: Request, res: Response): Promise<void>
       return;
     }
 
-    const isTestOtp = otp === '123456';
-    const isOtpValid = (admin.otpCode && admin.otpExpiresAt && admin.otpCode === otp && new Date() <= admin.otpExpiresAt) || isTestOtp;
+    const isOtpValid = !!(admin.otpCode && admin.otpExpiresAt && admin.otpCode === otp && new Date() <= admin.otpExpiresAt);
 
     if (!isOtpValid) {
       errorResponse(res, 'Invalid or expired OTP', 401);
