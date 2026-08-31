@@ -4,6 +4,7 @@ import { Save } from 'lucide-react';
 import { settingsApi } from '@/services/api';
 import { toast } from '@/components/ui/Toast';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import ImageUploader from '@/admin/components/ImageUploader';
 import type { SiteSettings } from '@/types';
 
 const GROUPS = [
@@ -70,14 +71,25 @@ export default function SiteContentPage() {
   const [activeGroup, setActiveGroup] = useState('general');
   const [local, setLocal] = useState<SiteSettings>({});
   const [dirty, setDirty] = useState(false);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
   const qc = useQueryClient();
 
   const { data, isLoading } = useQuery({ queryKey: ['settings'], queryFn: () => settingsApi.getAll().then((r) => r.data.data as SiteSettings) });
 
-  useEffect(() => { if (data) { setLocal(data); setDirty(false); } }, [data]);
+  useEffect(() => { if (data) { setLocal(data); setDirty(false); setLogoFile(null); } }, [data]);
 
   const updateMutation = useMutation({
-    mutationFn: () => settingsApi.update(local as Record<string, string>),
+    mutationFn: async () => {
+      // First save textual settings
+      await settingsApi.update(local as Record<string, string>);
+      // Then upload logo if selected
+      if (logoFile) {
+        const { data: uploadRes } = await settingsApi.uploadLogo(logoFile);
+        const newLogoPath = uploadRes.data.site_logo;
+        setLocal((prev) => ({ ...prev, site_logo: newLogoPath }));
+        setLogoFile(null);
+      }
+    },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['settings'] }); toast.success('Settings saved!'); setDirty(false); },
     onError: () => toast.error('Failed to save settings'),
   });
@@ -119,6 +131,21 @@ export default function SiteContentPage() {
         {/* Form */}
         <div className="flex-1 bg-white rounded-2xl border border-gray-200 p-7 space-y-5">
           <h3 className="font-heading font-semibold text-dark-900 text-lg">{currentGroup.label}</h3>
+          
+          {activeGroup === 'general' && (
+            <div className="border-b border-gray-100 pb-5 mb-5">
+              <label className="form-label mb-2">Business Logo</label>
+              <ImageUploader
+                onFilesSelected={(files) => {
+                  setLogoFile(files[0] || null);
+                  setDirty(true);
+                }}
+                existingImages={local.site_logo ? [{ id: 'site_logo', url: local.site_logo }] : []}
+                multiple={false}
+              />
+            </div>
+          )}
+
           {currentGroup.fields.map((field) => (
             <div key={field.key}>
               <label className="form-label">{field.label}</label>

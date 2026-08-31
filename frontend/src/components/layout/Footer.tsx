@@ -44,10 +44,10 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link to="/" className="inline-flex mb-5">
-              <div className="bg-white px-3 py-1.5 rounded-xl h-11 flex items-center shadow-md border border-white/10 hover:scale-[1.02] transition-transform">
+              <div className="bg-white px-4 py-1.5 rounded-xl h-12 flex items-center shadow-md border border-white/10 hover:scale-[1.02] transition-transform">
                 <img
-                  src="/images/hero/cbi-logo.png"
-                  alt="Chetan Brass Industries"
+                  src={settings?.site_logo || "/images/hero/cbi-logo.png"}
+                  alt={siteName}
                   className="h-full w-auto object-contain"
                 />
               </div>

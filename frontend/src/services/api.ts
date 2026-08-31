@@ -132,6 +132,11 @@ export const settingsApi = {
   getAll: () => api.get('/settings'),
   getByGroup: (group: string) => api.get(`/settings/${group}`),
   update: (data: Record<string, string>) => api.put('/settings', data),
+  uploadLogo: (file: File) => {
+    const fd = new FormData();
+    fd.append('logo', file);
+    return api.post('/settings/logo', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+  },
 };
 
 // ── Contact ──────────────────────────────────────────────────

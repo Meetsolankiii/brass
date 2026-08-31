@@ -65,10 +65,10 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-18 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center group">
-            <div className="bg-white px-3 py-1.5 rounded-xl h-11 md:h-12 flex items-center shadow-md border border-white/10 group-hover:scale-[1.02] transition-transform">
+            <div className="bg-white px-4 py-1.5 rounded-xl h-12 md:h-14 flex items-center shadow-md border border-white/10 group-hover:scale-[1.02] transition-transform">
               <img
-                src="/images/hero/cbi-logo.png"
-                alt="Chetan Brass Industries"
+                src={settingsData?.site_logo || "/images/hero/cbi-logo.png"}
+                alt={siteName}
                 className="h-full w-auto object-contain"
               />
             </div>

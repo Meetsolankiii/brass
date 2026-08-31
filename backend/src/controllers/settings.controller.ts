@@ -33,3 +33,25 @@ export async function updateSettings(req: AuthRequest, res: Response): Promise<v
     errorResponse(res, 'Failed to update settings', 500);
   }
 }
+
+export async function uploadLogo(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    if (!req.file) {
+      errorResponse(res, 'No file uploaded', 400);
+      return;
+    }
+    const logoPath = `/api/uploads/logo/${req.file.filename}`;
+    
+    // Update database
+    await prisma.siteSetting.upsert({
+      where: { key: 'site_logo' },
+      update: { value: logoPath },
+      create: { key: 'site_logo', value: logoPath, group: 'general' }
+    });
+    
+    successResponse(res, { site_logo: logoPath }, 'Logo uploaded successfully');
+  } catch (error) {
+    console.error('Upload logo error:', error);
+    errorResponse(res, 'Failed to upload logo', 500);
+  }
+}
