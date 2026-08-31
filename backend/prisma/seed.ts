@@ -4,6 +4,13 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
+  // Check if database is already seeded to avoid resetting settings/content and creating duplicates on restarts
+  const adminCount = await prisma.adminUser.count();
+  if (adminCount > 0) {
+    console.log('📊 Database is already seeded. Skipping seeding to preserve your custom settings and products.');
+    return;
+  }
+
   console.log('🌱 Seeding database...\n');
 
   // ── Admin User ──────────────────────────────────────────────
