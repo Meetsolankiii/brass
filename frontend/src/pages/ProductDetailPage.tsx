@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronRight, Phone, Mail, CheckCircle, ArrowLeft, Tag } from 'lucide-react';
+import { ChevronRight, Phone, MessageCircle, CheckCircle, ArrowLeft, Tag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { productsApi } from '@/services/api';
+import { productsApi, settingsApi } from '@/services/api';
 import ProductCard from '@/components/shared/ProductCard';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import AnimatedSection from '@/components/shared/AnimatedSection';
-import type { Product, ApiResponse } from '@/types';
+import type { Product, ApiResponse, SiteSettings } from '@/types';
 
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -18,6 +18,12 @@ export default function ProductDetailPage() {
     queryKey: ['product', slug],
     queryFn: () => productsApi.getOne(slug!).then((r) => r.data as ApiResponse<Product & { related: Product[] }>),
     enabled: !!slug,
+  });
+
+  const { data: settingsData } = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => settingsApi.getAll().then((r) => r.data.data as SiteSettings),
+    staleTime: 10 * 60 * 1000,
   });
 
   if (isLoading) return <div className="pt-20"><LoadingSpinner fullscreen message="Loading product..." /></div>;
@@ -134,8 +140,13 @@ export default function ProductDetailPage() {
               <Link to="/contact" className="btn-primary btn-lg rounded-xl flex-1 justify-center shadow-glow-blue">
                 <Phone size={16} /> Enquire Now
               </Link>
-              <a href={`mailto:${''}`} className="btn-outline btn-lg rounded-xl flex-1 justify-center">
-                <Mail size={16} /> Send Email
+              <a 
+                href={`https://wa.me/${settingsData?.whatsapp_number || '919924464511'}?text=${encodeURIComponent(`Hi, I am interested in your product: ${product.name} (SKU: ${product.sku || 'N/A'}). Can you please share more details?`)}`} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn-outline border-emerald-600 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 btn-lg rounded-xl flex-1 justify-center gap-2"
+              >
+                <MessageCircle size={16} /> Send Message
               </a>
             </div>
           </AnimatedSection>
