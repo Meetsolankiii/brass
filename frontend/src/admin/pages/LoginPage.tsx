@@ -357,7 +357,7 @@ export default function LoginPage() {
                   </button>
                 </form>
 
-                <div className="text-center mt-8 border-t border-gray-100 pt-4">
+                <div className="text-center mt-8 border-t border-gray-100 pt-4 flex items-center justify-between px-1">
                   <button 
                     type="button" 
                     onClick={() => {
@@ -369,6 +369,15 @@ export default function LoginPage() {
                     className="text-sm font-semibold text-primary-DEFAULT hover:text-primary-700 transition-colors focus:outline-none"
                   >
                     Forgot Password?
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => navigate('/')}
+                    className="text-sm font-semibold text-gray-500 hover:text-dark-900 transition-colors focus:outline-none flex items-center gap-1"
+                  >
+                    <ArrowLeft size={14} />
+                    Back to Website
                   </button>
                 </div>
               </motion.div>

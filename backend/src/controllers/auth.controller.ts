@@ -162,8 +162,7 @@ export async function verifyOtp(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const isTestOtp = otp === '123456';
-    const isOtpValid = (admin.otpCode && admin.otpExpiresAt && admin.otpCode === otp && new Date() <= admin.otpExpiresAt) || isTestOtp;
+    const isOtpValid = !!(admin.otpCode && admin.otpExpiresAt && admin.otpCode === otp && new Date() <= admin.otpExpiresAt);
 
     if (!isOtpValid) {
       errorResponse(res, 'Invalid or expired OTP', 401);
