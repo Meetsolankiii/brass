@@ -23,8 +23,8 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'rajnish-auth',
-      storage: createJSONStorage(() => sessionStorage),
-      partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ accessToken: state.accessToken, user: state.user, isAuthenticated: state.isAuthenticated }),
     }
   )
 );
