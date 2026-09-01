@@ -371,14 +371,13 @@ export default function LoginPage() {
                     Forgot Password?
                   </button>
 
-                  <button
-                    type="button"
-                    onClick={() => navigate('/')}
+                  <a
+                    href="https://chetan-brass.vercel.app/"
                     className="text-sm font-semibold text-gray-500 hover:text-dark-900 transition-colors focus:outline-none flex items-center gap-1"
                   >
                     <ArrowLeft size={14} />
                     Back to Website
-                  </button>
+                  </a>
                 </div>
               </motion.div>
             )}
