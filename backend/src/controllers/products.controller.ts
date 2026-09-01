@@ -86,12 +86,18 @@ export async function createProduct(req: AuthRequest, res: Response): Promise<vo
 
     const product = await prisma.product.create({
       data: {
-        name, slug, categoryId,
-        shortDesc: shortDesc || null, fullDesc: fullDesc || null,
-        price: price ? parseFloat(price) : null, sku: sku || null,
+        name,
+        slug,
+        categoryId,
+        shortDesc: shortDesc ? String(shortDesc).trim() : null,
+        fullDesc: fullDesc ? String(fullDesc).trim() : null,
+        price: (price !== null && price !== '' && !isNaN(Number(price))) ? parseFloat(String(price)) : null,
+        sku: (sku && String(sku).trim()) ? String(sku).trim() : null,
         status: (status as string).toUpperCase() as 'ACTIVE' | 'INACTIVE' | 'DRAFT',
-        featured: Boolean(featured), stock: stock ? parseInt(stock) : null,
-        metaTitle: metaTitle || null, metaDesc: metaDesc || null,
+        featured: Boolean(featured),
+        stock: (stock !== null && stock !== '' && !isNaN(Number(stock))) ? parseInt(String(stock), 10) : null,
+        metaTitle: metaTitle ? String(metaTitle).trim() : null,
+        metaDesc: metaDesc ? String(metaDesc).trim() : null,
         features: { create: (Array.isArray(features) ? features : []).map((f: string, i: number) => ({ feature: f, order: i })) },
         specs: { create: (Array.isArray(specs) ? specs : []).map((s: { label: string; value: string }, i: number) => ({ label: s.label, value: s.value, order: i })) },
       },
@@ -121,19 +127,28 @@ export async function updateProduct(req: AuthRequest, res: Response): Promise<vo
     const data: any = {};
     if (name !== undefined) { data.name = name; data.slug = slug; }
     if (categoryId !== undefined) data.categoryId = categoryId;
-    if (shortDesc !== undefined) data.shortDesc = shortDesc;
-    if (fullDesc !== undefined) data.fullDesc = fullDesc;
-    if (price !== undefined) data.price = price ? parseFloat(price) : null;
-    if (sku !== undefined) data.sku = sku;
+    if (shortDesc !== undefined) data.shortDesc = shortDesc ? String(shortDesc).trim() : null;
+    if (fullDesc !== undefined) data.fullDesc = fullDesc ? String(fullDesc).trim() : null;
+    if (price !== undefined) data.price = (price !== null && price !== '' && !isNaN(Number(price))) ? parseFloat(String(price)) : null;
+    if (sku !== undefined) data.sku = (sku && String(sku).trim()) ? String(sku).trim() : null;
     if (status !== undefined) data.status = (status as string).toUpperCase();
     if (featured !== undefined) data.featured = Boolean(featured);
-    if (stock !== undefined) data.stock = stock ? parseInt(stock) : null;
-    if (metaTitle !== undefined) data.metaTitle = metaTitle;
-    if (metaDesc !== undefined) data.metaDesc = metaDesc;
+    if (stock !== undefined) data.stock = (stock !== null && stock !== '' && !isNaN(Number(stock))) ? parseInt(String(stock), 10) : null;
+    if (metaTitle !== undefined) data.metaTitle = metaTitle ? String(metaTitle).trim() : null;
+    if (metaDesc !== undefined) data.metaDesc = metaDesc ? String(metaDesc).trim() : null;
     if (features !== undefined) data.features = { deleteMany: {}, create: (Array.isArray(features) ? features : []).map((f: string, i: number) => ({ feature: f, order: i })) };
     if (specs !== undefined) data.specs = { deleteMany: {}, create: (Array.isArray(specs) ? specs : []).map((s: { label: string; value: string }, i: number) => ({ label: s.label, value: s.value, order: i })) };
 
-    const product = await prisma.product.update({ where: { id }, data, include: { category: true, features: { orderBy: { order: 'asc' } }, specs: { orderBy: { order: 'asc' } }, images: { orderBy: [{ isPrimary: 'desc' }, { order: 'asc' }] } } });
+    const product = await prisma.product.update({
+      where: { id },
+      data,
+      include: {
+        category: true,
+        features: { orderBy: { order: 'asc' } },
+        specs: { orderBy: { order: 'asc' } },
+        images: { orderBy: [{ isPrimary: 'desc' }, { order: 'asc' }] }
+      }
+    });
     successResponse(res, product, 'Product updated successfully');
   } catch (error) {
     console.error('Update product error:', error);

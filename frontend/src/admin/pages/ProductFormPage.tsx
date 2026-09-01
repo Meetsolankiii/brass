@@ -75,15 +75,22 @@ export default function ProductFormPage() {
     mutationFn: async (data: FormData) => {
       const payload = {
         ...data,
-        features: data.features.map((f) => f.value).filter(Boolean),
-        specs: data.specs.filter((s) => s.label && s.value),
+        price: data.price ? parseFloat(data.price) : null,
+        stock: data.stock ? parseInt(data.stock) : null,
+        sku: data.sku?.trim() ? data.sku.trim() : null,
+        shortDesc: data.shortDesc?.trim() ? data.shortDesc.trim() : null,
+        fullDesc: data.fullDesc?.trim() ? data.fullDesc.trim() : null,
+        metaTitle: data.metaTitle?.trim() ? data.metaTitle.trim() : null,
+        metaDesc: data.metaDesc?.trim() ? data.metaDesc.trim() : null,
+        features: (data.features || []).map((f) => f.value).filter(Boolean),
+        specs: (data.specs || []).filter((s) => s.label && s.value),
         featured: Boolean(data.featured),
       };
       if (isEdit) return productsApi.update(id!, payload);
       return productsApi.create(payload);
     },
     onSuccess: async (res) => {
-      const productId = (res.data as ApiResponse<Product>).data.id;
+      const productId = isEdit ? id! : (res.data as ApiResponse<Product>).data.id;
       // Upload pending images
       if (pendingImages.length > 0) {
         try {
@@ -92,6 +99,7 @@ export default function ProductFormPage() {
       }
       qc.invalidateQueries({ queryKey: ['admin-products'] });
       qc.invalidateQueries({ queryKey: ['products'] });
+      qc.invalidateQueries({ queryKey: ['product-edit', id] });
       toast.success(`Product ${isEdit ? 'updated' : 'created'} successfully!`);
       navigate('/owner/products');
     },
