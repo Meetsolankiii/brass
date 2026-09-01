@@ -13,6 +13,7 @@ export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState<'description' | 'features' | 'specs'>('description');
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['product', slug],
@@ -70,11 +71,12 @@ export default function ProductDetailPage() {
           <div>
             <div className="bg-white rounded-2xl overflow-hidden shadow-md aspect-square mb-4 relative">
               <AnimatePresence mode="wait">
-                {images[activeImage] ? (
+                {images[activeImage] && !failedImages[images[activeImage].id] ? (
                   <motion.img
                     key={activeImage}
                     src={images[activeImage].url}
                     alt={images[activeImage].altText || product.name}
+                    onError={() => setFailedImages((prev) => ({ ...prev, [images[activeImage].id]: true }))}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}

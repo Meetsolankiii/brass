@@ -164,7 +164,24 @@ export async function uploadProductImages(req: AuthRequest, res: Response): Prom
     if (!product) { errorResponse(res, 'Product not found', 404); return; }
     const existingPrimary = await prisma.productImage.findFirst({ where: { productId: id, isPrimary: true } });
     const images = await prisma.$transaction(
-      files.map((file, i) => prisma.productImage.create({ data: { productId: id, url: `/api/uploads/products/${file.filename}`, altText: product.name, isPrimary: !existingPrimary && i === 0, order: i } }))
+      files.map((file, i) => {
+        let imageUrl = `/api/uploads/products/${file.filename}`;
+        try {
+          const buffer = fs.readFileSync(file.path);
+          imageUrl = `data:${file.mimetype || 'image/jpeg'};base64,${buffer.toString('base64')}`;
+        } catch (e) {
+          console.error('Error creating base64 data for product image:', e);
+        }
+        return prisma.productImage.create({
+          data: {
+            productId: id,
+            url: imageUrl,
+            altText: product.name,
+            isPrimary: !existingPrimary && i === 0,
+            order: i,
+          },
+        });
+      })
     );
     successResponse(res, images, 'Images uploaded successfully', 201);
   } catch (error) {

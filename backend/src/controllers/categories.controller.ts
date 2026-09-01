@@ -86,8 +86,17 @@ export async function uploadCategoryImage(req: AuthRequest, res: Response): Prom
     if (!file) { errorResponse(res, 'No image provided', 400); return; }
     const existing = await prisma.category.findUnique({ where: { id } });
     if (!existing) { errorResponse(res, 'Category not found', 404); return; }
-    if (existing.image) rmFile(existing.image);
-    const category = await prisma.category.update({ where: { id }, data: { image: `/api/uploads/categories/${file.filename}` } });
+    if (existing.image && !existing.image.startsWith('data:')) rmFile(existing.image);
+
+    let imageUrl = `/api/uploads/categories/${file.filename}`;
+    try {
+      const buffer = fs.readFileSync(file.path);
+      imageUrl = `data:${file.mimetype || 'image/jpeg'};base64,${buffer.toString('base64')}`;
+    } catch (e) {
+      console.error('Error reading category image buffer:', e);
+    }
+
+    const category = await prisma.category.update({ where: { id }, data: { image: imageUrl } });
     successResponse(res, category, 'Image uploaded');
   } catch { errorResponse(res, 'Failed to upload image', 500); }
 }

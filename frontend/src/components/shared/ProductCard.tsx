@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Tag } from 'lucide-react';
@@ -9,6 +10,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
+  const [imgError, setImgError] = useState(false);
   const primaryImage = product.images?.find((i) => i.isPrimary) || product.images?.[0];
   const imageUrl = primaryImage?.url || null;
 
@@ -21,10 +23,11 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
     >
       {/* Image */}
       <Link to={`/products/${product.slug}`} className="block relative aspect-product bg-gray-100 overflow-hidden">
-        {imageUrl ? (
+        {imageUrl && !imgError ? (
           <img
             src={imageUrl}
             alt={primaryImage?.altText || product.name}
+            onError={() => setImgError(true)}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />

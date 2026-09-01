@@ -11,6 +11,7 @@ import type { Product, PaginatedResponse } from '@/types';
 export default function ProductsListPage() {
   const [search, setSearch] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [failedImgs, setFailedImgs] = useState<Record<string, boolean>>({});
   const qc = useQueryClient();
 
   const { data, isLoading } = useQuery({
@@ -79,8 +80,13 @@ export default function ProductsListPage() {
                   return (
                     <tr key={p.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-5 py-4">
-                        {primaryImg ? (
-                          <img src={primaryImg.url} alt={p.name} className="w-12 h-12 rounded-xl object-cover" />
+                        {primaryImg && !failedImgs[primaryImg.id] ? (
+                          <img
+                            src={primaryImg.url}
+                            alt={p.name}
+                            onError={() => setFailedImgs((prev) => ({ ...prev, [primaryImg.id]: true }))}
+                            className="w-12 h-12 rounded-xl object-cover"
+                          />
                         ) : (
                           <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center"><Image size={18} className="text-gray-300" /></div>
                         )}

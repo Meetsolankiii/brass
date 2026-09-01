@@ -54,7 +54,14 @@ export async function uploadLogo(req: AuthRequest, res: Response): Promise<void>
       console.error('[Auto-Crop] Failed to crop logo:', cropError);
     }
 
-    const logoPath = `/api/uploads/logo/${req.file.filename}`;
+    let logoPath = `/api/uploads/logo/${req.file.filename}`;
+    try {
+      const fs = require('fs');
+      const buffer = fs.readFileSync(req.file.path);
+      logoPath = `data:${req.file.mimetype || 'image/png'};base64,${buffer.toString('base64')}`;
+    } catch (e) {
+      console.error('Error reading logo buffer for base64:', e);
+    }
     
     // Update database
     await prisma.siteSetting.upsert({
