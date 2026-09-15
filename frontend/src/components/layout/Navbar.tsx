@@ -56,7 +56,7 @@ export default function Navbar() {
             <img
               src={settingsData?.site_logo || "/images/hero/cbi-logo.png"}
               alt={siteName}
-              className="h-12 md:h-14 w-auto max-w-[260px] md:max-w-[300px] object-contain transition-transform group-hover:scale-[1.02]"
+              className="h-12 md:h-14 w-auto max-w-[260px] md:max-w-[300px] object-contain mix-blend-multiply transition-transform group-hover:scale-[1.02]"
             />
           </Link>
 

@@ -1,8 +1,9 @@
 /**
- * Automatically crops solid background borders (white/near-white or transparent) from an image file.
- * Returns a new File object containing the tightly cropped image.
+ * Automatically crops solid background borders from an image file
+ * and converts white/near-white backgrounds into transparent pixels so the logo has no rectangular box.
+ * Returns a new File object containing the transparent, tightly cropped image.
  */
-export async function autoCropImage(file: File, padding = 8, threshold = 25): Promise<File> {
+export async function autoCropImage(file: File, padding = 6, threshold = 25): Promise<File> {
   return new Promise((resolve) => {
     if (!file.type.startsWith('image/')) {
       return resolve(file);
@@ -50,10 +51,8 @@ export async function autoCropImage(file: File, padding = 8, threshold = 25): Pr
 
           let isContent = false;
           if (bgA < 30) {
-            // Transparent background
             if (a > 30) isContent = true;
           } else {
-            // Solid background (like white or light grey)
             const diff = Math.abs(r - bgR) + Math.abs(g - bgG) + Math.abs(b - bgB);
             if (diff > threshold || Math.abs(a - bgA) > 30) {
               isContent = true;
@@ -70,12 +69,10 @@ export async function autoCropImage(file: File, padding = 8, threshold = 25): Pr
         }
       }
 
-      // If no borders found or couldn't detect content, return original
       if (!foundContent || (minX === 0 && minY === 0 && maxX === width - 1 && maxY === height - 1)) {
         return resolve(file);
       }
 
-      // Add padding
       const cropX = Math.max(0, minX - padding);
       const cropY = Math.max(0, minY - padding);
       const cropW = Math.min(width - cropX, (maxX - minX) + (padding * 2));
@@ -86,20 +83,34 @@ export async function autoCropImage(file: File, padding = 8, threshold = 25): Pr
       const croppedCanvas = document.createElement('canvas');
       croppedCanvas.width = cropW;
       croppedCanvas.height = cropH;
-      const croppedCtx = croppedCanvas.getContext('2d');
+      const croppedCtx = croppedCanvas.getContext('2d', { willReadFrequently: true });
       if (!croppedCtx) return resolve(file);
 
-      // Preserve clean white background if original had white background
-      if (bgA >= 200 && bgR > 230 && bgG > 230 && bgB > 230) {
-        croppedCtx.fillStyle = '#ffffff';
-        croppedCtx.fillRect(0, 0, cropW, cropH);
-      }
-
+      // Draw cropped area on transparent canvas
       croppedCtx.drawImage(
         canvas,
         cropX, cropY, cropW, cropH,
         0, 0, cropW, cropH
       );
+
+      // Make any near-white or background pixels fully transparent
+      const croppedData = croppedCtx.getImageData(0, 0, cropW, cropH);
+      const cData = croppedData.data;
+      for (let i = 0; i < cData.length; i += 4) {
+        const r = cData[i];
+        const g = cData[i + 1];
+        const b = cData[i + 2];
+        const a = cData[i + 3];
+
+        if (a > 0) {
+          const diffFromBg = Math.abs(r - bgR) + Math.abs(g - bgG) + Math.abs(b - bgB);
+          // If close to original solid background or near pure white
+          if ((bgA >= 50 && diffFromBg <= threshold) || (r > 230 && g > 230 && b > 230)) {
+            cData[i + 3] = 0; // Transparent
+          }
+        }
+      }
+      croppedCtx.putImageData(croppedData, 0, 0);
 
       croppedCanvas.toBlob(
         (blob) => {
