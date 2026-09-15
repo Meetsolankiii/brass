@@ -104,7 +104,7 @@ export default function Navbar() {
                           <Link to="/products" className="block px-4 py-2.5 text-sm text-gray-800 hover:text-primary-600 hover:bg-primary-50 font-bold border-b border-gray-100 transition-colors">
                             All Products
                           </Link>
-                          {categoriesData?.slice(0, 8).map((cat) => (
+                          {categoriesData?.filter((c) => c.isActive !== false).slice(0, 5).map((cat) => (
                             <Link key={cat.id} to={`/products?category=${cat.slug}`} className="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-colors">
                               {cat.name}
                             </Link>
@@ -196,7 +196,7 @@ export default function Navbar() {
                   </NavLink>
                   {link.hasDropdown && (
                     <div className="pl-4 mt-1 flex flex-col gap-0.5">
-                      {categoriesData?.slice(0, 6).map((cat) => (
+                      {categoriesData?.filter((c) => c.isActive !== false).slice(0, 5).map((cat) => (
                         <Link key={cat.id} to={`/products?category=${cat.slug}`} className="px-4 py-2 text-xs text-gray-500 hover:text-primary-600 rounded-lg hover:bg-gray-50 transition-colors">
                           {cat.name}
                         </Link>
