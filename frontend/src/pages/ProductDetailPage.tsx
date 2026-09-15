@@ -94,7 +94,7 @@ export default function ProductDetailPage() {
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {images.map((img, i) => (
                   <button key={img.id} onClick={() => setActiveImage(i)}
-                    className={`shrink-0 w-18 h-18 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${i === activeImage ? 'border-primary-DEFAULT shadow-glow-blue' : 'border-gray-200 hover:border-primary-300'}`}>
+                    className={`shrink-0 w-18 h-18 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${i === activeImage ? 'border-primary-DEFAULT shadow-glow-red' : 'border-gray-200 hover:border-primary-300'}`}>
                     <img src={img.url} alt={img.altText || product.name} className="w-full h-full object-cover" />
                   </button>
                 ))}
@@ -111,12 +111,12 @@ export default function ProductDetailPage() {
 
             {/* Status */}
             <div className="flex items-center gap-3 mb-8">
-              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold ${product.status === 'ACTIVE' ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                <span className={`w-2 h-2 rounded-full ${product.status === 'ACTIVE' ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold ${product.status === 'ACTIVE' ? 'bg-primary-50 text-primary-700 border border-primary-200' : 'bg-gray-100 text-gray-600'}`}>
+                <span className={`w-2 h-2 rounded-full ${product.status === 'ACTIVE' ? 'bg-primary-600 animate-pulse' : 'bg-gray-400'}`} />
                 {product.status === 'ACTIVE' ? 'In Stock / Available' : product.status}
               </span>
               {product.featured && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold bg-accent-50 text-accent-700">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold bg-primary-600 text-white">
                   ★ Featured
                 </span>
               )}
@@ -139,14 +139,14 @@ export default function ProductDetailPage() {
 
             {/* CTA */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <Link to="/contact" className="btn-primary btn-lg rounded-xl flex-1 justify-center shadow-glow-blue">
+              <Link to="/contact" className="btn-primary btn-lg rounded-xl flex-1 justify-center shadow-glow-red">
                 <Phone size={16} /> Enquire Now
               </Link>
               <a 
                 href={`https://wa.me/${settingsData?.whatsapp_number || '919924464511'}?text=${encodeURIComponent(`Hi, I am interested in your product: ${product.name} (SKU: ${product.sku || 'N/A'}). Can you please share more details?`)}`} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="btn-outline border-emerald-600 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 btn-lg rounded-xl flex-1 justify-center gap-2"
+                className="btn-outline border-dark-900 text-dark-900 hover:bg-dark-900 hover:text-white btn-lg rounded-xl flex-1 justify-center gap-2"
               >
                 <MessageCircle size={16} /> Send Message
               </a>

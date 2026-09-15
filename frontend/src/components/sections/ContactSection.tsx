@@ -80,8 +80,8 @@ export default function ContactSection() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
               {submitted ? (
                 <div className="text-center py-12">
-                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                    <Send size={28} className="text-green-600" />
+                  <div className="w-16 h-16 rounded-full bg-primary-50 border border-primary-100 flex items-center justify-center mx-auto mb-4">
+                    <Send size={28} className="text-primary-600" />
                   </div>
                   <h3 className="font-heading font-bold text-xl text-dark-900 mb-2">Message Sent!</h3>
                   <p className="text-gray-500">Thank you for reaching out. We'll get back to you within 24 hours.</p>

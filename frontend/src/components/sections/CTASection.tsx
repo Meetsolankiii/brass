@@ -27,10 +27,10 @@ export default function CTASection() {
                 {settings?.cta_subheading || 'Contact our expert team today for guidance on the right products for your industrial needs.'}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/contact" className="btn bg-accent-DEFAULT text-dark-900 hover:bg-accent-400 btn-lg rounded-xl font-bold shadow-glow-gold active:scale-95">
+                <Link to="/contact" className="btn bg-white text-primary-600 hover:bg-gray-100 btn-lg rounded-xl font-bold shadow-lg active:scale-95">
                   {settings?.cta_button_text || 'Get In Touch'} <ArrowRight size={18} />
                 </Link>
-                <Link to="/products" className="btn border-2 border-white/30 text-white hover:bg-white hover:text-dark-900 btn-lg rounded-xl active:scale-95">
+                <Link to="/products" className="btn border-2 border-white/40 text-white hover:bg-white hover:text-dark-900 btn-lg rounded-xl active:scale-95 font-semibold">
                   Browse Products
                 </Link>
               </div>

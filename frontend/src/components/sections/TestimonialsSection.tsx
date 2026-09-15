@@ -55,7 +55,7 @@ export default function TestimonialsSection() {
               {/* Stars */}
               <div className="flex gap-1 mb-6">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={18} fill={i < t.rating ? '#c9a227' : 'transparent'} className={i < t.rating ? 'text-accent-DEFAULT' : 'text-white/30'} />
+                  <Star key={i} size={18} fill={i < t.rating ? '#dc2626' : 'transparent'} className={i < t.rating ? 'text-primary-DEFAULT' : 'text-white/30'} />
                 ))}
               </div>
               <p className="text-white text-lg leading-relaxed mb-8 italic">"{t.content}"</p>

@@ -49,7 +49,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
         </div>
         {product.featured && (
           <div className="absolute top-3 right-3">
-            <span className="bg-accent-DEFAULT text-dark-900 text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">★ Featured</span>
+            <span className="bg-primary-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">★ Featured</span>
           </div>
         )}
         {/* Overlay on hover */}

@@ -386,7 +386,7 @@ export default function LoginPage() {
             {mode === 'login-otp' && (
               <motion.div key="login-otp" variants={formVariants} initial="hidden" animate="visible" exit="exit">
                 <div className="text-center mb-8">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center mx-auto mb-4 shadow-[0_8px_20px_rgba(16,185,129,0.25)] hover:scale-105 transition-all duration-300">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-700 flex items-center justify-center mx-auto mb-4 shadow-[0_8px_20px_rgba(220,38,38,0.25)] hover:scale-105 transition-all duration-300">
                     <Key size={30} className="text-white" />
                   </div>
                   <h1 className="font-heading font-extrabold text-2xl text-dark-900 tracking-tight">2FA Verification</h1>
@@ -404,7 +404,7 @@ export default function LoginPage() {
                       maxLength={6}
                       value={otp}
                       onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                      className="form-input text-center text-3xl font-extrabold tracking-[0.5em] h-16 border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 rounded-2xl bg-gray-50/50"
+                      className="form-input text-center text-3xl font-extrabold tracking-[0.5em] h-16 border-2 border-gray-200 focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 rounded-2xl bg-gray-50/50"
                       placeholder="••••••"
                       required
                       autoFocus
@@ -414,7 +414,7 @@ export default function LoginPage() {
                   <button
                     type="submit"
                     disabled={isVerifyingOtp || otp.length !== 6}
-                    className="w-full btn-primary bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl py-3 shadow-[0_4px_15px_rgba(16,185,129,0.25)] hover:shadow-[0_4px_25px_rgba(16,185,129,0.4)] transition-all duration-300 font-bold active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full btn-primary bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white rounded-xl py-3 shadow-[0_4px_15px_rgba(220,38,38,0.25)] hover:shadow-[0_4px_25px_rgba(220,38,38,0.4)] transition-all duration-300 font-bold active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {isVerifyingOtp ? 'Verifying OTP...' : 'Verify & Sign In'}
                   </button>
@@ -491,7 +491,7 @@ export default function LoginPage() {
             {mode === 'forgot-otp' && (
               <motion.div key="forgot-otp" variants={formVariants} initial="hidden" animate="visible" exit="exit">
                 <div className="text-center mb-8">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center mx-auto mb-4 shadow-[0_8px_20px_rgba(16,185,129,0.25)] hover:scale-105 transition-all duration-300">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-700 flex items-center justify-center mx-auto mb-4 shadow-[0_8px_20px_rgba(220,38,38,0.25)] hover:scale-105 transition-all duration-300">
                     <Mail size={30} className="text-white" />
                   </div>
                   <h1 className="font-heading font-extrabold text-2xl text-dark-900 tracking-tight">Reset Verification</h1>
@@ -509,7 +509,7 @@ export default function LoginPage() {
                       maxLength={6}
                       value={otp}
                       onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                      className="form-input text-center text-3xl font-extrabold tracking-[0.5em] h-16 border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 rounded-2xl bg-gray-50/50"
+                      className="form-input text-center text-3xl font-extrabold tracking-[0.5em] h-16 border-2 border-gray-200 focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 rounded-2xl bg-gray-50/50"
                       placeholder="••••••"
                       required
                       autoFocus
@@ -519,7 +519,7 @@ export default function LoginPage() {
                   <button
                     type="submit"
                     disabled={otp.length !== 6}
-                    className="w-full btn-primary bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl py-3 shadow-[0_4px_15px_rgba(16,185,129,0.25)] transition-all duration-300 font-bold active:scale-95 disabled:opacity-60"
+                    className="w-full btn-primary bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white rounded-xl py-3 shadow-[0_4px_15px_rgba(220,38,38,0.25)] transition-all duration-300 font-bold active:scale-95 disabled:opacity-60"
                   >
                     Confirm OTP
                   </button>
@@ -650,7 +650,7 @@ export default function LoginPage() {
                     initial={{ scale: 0 }}
                     animate={{ scale: [0, 1.25, 1] }}
                     transition={{ duration: 0.45, ease: 'easeOut' }}
-                    className="w-16 h-16 rounded-full bg-emerald-50 border-2 border-emerald-500 flex items-center justify-center text-emerald-500 shadow-lg shadow-emerald-500/20"
+                    className="w-16 h-16 rounded-full bg-red-50 border-2 border-red-500 flex items-center justify-center text-red-500 shadow-lg shadow-red-500/20"
                   >
                     <CheckCircle2 size={36} className="animate-pulse" />
                   </motion.div>
@@ -668,7 +668,7 @@ export default function LoginPage() {
                     initial={{ scale: 0 }}
                     animate={{ scale: [0, 1.25, 1] }}
                     transition={{ duration: 0.45, ease: 'easeOut' }}
-                    className="w-16 h-16 rounded-full bg-blue-50 border-2 border-blue-500 flex items-center justify-center text-blue-500 shadow-lg shadow-blue-500/20"
+                    className="w-16 h-16 rounded-full bg-red-50 border-2 border-red-500 flex items-center justify-center text-red-500 shadow-lg shadow-red-500/20"
                   >
                     <Info size={36} />
                   </motion.div>
@@ -683,13 +683,7 @@ export default function LoginPage() {
                   if (alert.onConfirm) alert.onConfirm();
                   setAlert(null);
                 }}
-                className={`w-full py-3 rounded-xl font-bold text-white transition-all duration-300 shadow-md transform active:scale-95 ${
-                  alert.type === 'success'
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-emerald-500/20 hover:shadow-emerald-500/30'
-                    : alert.type === 'error'
-                    ? 'bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 shadow-red-500/20 hover:shadow-red-500/30'
-                    : 'bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-primary-500/20 hover:shadow-primary-500/30'
-                }`}
+                className="w-full py-3 rounded-xl font-bold text-white transition-all duration-300 shadow-md transform active:scale-95 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 shadow-red-500/20 hover:shadow-red-500/30"
               >
                 OK
               </button>

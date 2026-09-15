@@ -38,7 +38,7 @@ export default function FeaturedProducts() {
         )}
 
         <AnimatedSection delay={0.3} className="mt-12 text-center">
-          <Link to="/products" className="btn-primary btn-lg rounded-xl shadow-glow-blue">
+          <Link to="/products" className="btn-primary btn-lg rounded-xl shadow-glow-red">
             View All Products <ArrowRight size={18} />
           </Link>
         </AnimatedSection>

@@ -218,7 +218,7 @@ export default function AccountSettingsPage() {
             >
               <div className="mx-auto mb-5 flex items-center justify-center">
                 {alert.type === 'success' ? (
-                  <div className="w-16 h-16 rounded-full bg-emerald-50 border-2 border-emerald-500 flex items-center justify-center text-emerald-500 shadow-lg shadow-emerald-500/20">
+                  <div className="w-16 h-16 rounded-full bg-red-50 border-2 border-red-500 flex items-center justify-center text-red-500 shadow-lg shadow-red-500/20">
                     <CheckCircle2 size={36} />
                   </div>
                 ) : (
@@ -231,11 +231,7 @@ export default function AccountSettingsPage() {
               <p className="text-gray-500 text-sm leading-relaxed mb-6 px-2">{alert.message}</p>
               <button
                 onClick={() => setAlert(null)}
-                className={`w-full py-3 rounded-xl font-bold text-white transition-all duration-300 shadow-md ${
-                  alert.type === 'success'
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700'
-                    : 'bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700'
-                }`}
+                className="w-full py-3 rounded-xl font-bold text-white transition-all duration-300 shadow-md bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800"
               >
                 OK
               </button>

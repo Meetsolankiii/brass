@@ -30,10 +30,10 @@ export default function DashboardPage() {
   const { data: testimonialsData } = useQuery({ queryKey: ['testimonials'], queryFn: () => testimonialsApi.getAll().then((r) => r.data as { data: Testimonial[] }) });
 
   const stats = [
-    { icon: Package, label: 'Total Products', value: productsData?.pagination?.total ?? '—', color: 'border-primary-100 text-primary-DEFAULT', link: '/owner/products' },
-    { icon: Zap, label: 'Featured Products', value: featuredData?.pagination?.total ?? '—', color: 'border-accent-100 text-accent-DEFAULT', link: '/owner/products' },
-    { icon: FolderOpen, label: 'Categories', value: categoriesData?.data?.length ?? '—', color: 'border-green-100 text-green-600', link: '/owner/categories' },
-    { icon: Star, label: 'Testimonials', value: testimonialsData?.data?.length ?? '—', color: 'border-purple-100 text-purple-600', link: '/owner/testimonials' },
+    { icon: Package, label: 'Total Products', value: productsData?.pagination?.total ?? '—', color: 'border-primary-200 text-primary-DEFAULT', link: '/owner/products' },
+    { icon: Zap, label: 'Featured Products', value: featuredData?.pagination?.total ?? '—', color: 'border-primary-200 text-primary-DEFAULT', link: '/owner/products' },
+    { icon: FolderOpen, label: 'Categories', value: categoriesData?.data?.length ?? '—', color: 'border-gray-200 text-dark-900', link: '/owner/categories' },
+    { icon: Star, label: 'Testimonials', value: testimonialsData?.data?.length ?? '—', color: 'border-gray-200 text-dark-900', link: '/owner/testimonials' },
   ];
 
   const recentProducts = productsData?.data?.slice(0, 5) || [];

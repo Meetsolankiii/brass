@@ -68,7 +68,7 @@ export default function HeroSection() {
               <div 
                 className="absolute inset-0"
                 style={{
-                  background: 'linear-gradient(to bottom, rgba(13, 27, 42, 0.85) 0%, rgba(13, 27, 42, 0.6) 50%, rgba(13, 27, 42, 0.9) 100%)'
+                  background: 'linear-gradient(to bottom, rgba(10, 10, 10, 0.90) 0%, rgba(10, 10, 10, 0.65) 50%, rgba(10, 10, 10, 0.95) 100%)'
                 }}
               />
             </div>
@@ -79,7 +79,7 @@ export default function HeroSection() {
                   {/* Badge */}
                   <motion.div variants={itemVariants} className="mb-4 justify-center flex">
                     <span className="inline-flex items-center gap-2 bg-primary-DEFAULT/20 border border-primary-DEFAULT/30 text-primary-300 text-sm font-semibold px-4 py-2 rounded-full backdrop-blur-sm">
-                      <span className="w-2 h-2 rounded-full bg-accent-DEFAULT animate-pulse" />
+                      <span className="w-2 h-2 rounded-full bg-primary-DEFAULT animate-pulse" />
                       JAMNAGAR, INDIA EXPORTER
                     </span>
                   </motion.div>
@@ -96,7 +96,7 @@ export default function HeroSection() {
 
                   {/* CTAs */}
                   <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <Link to="/products" className="btn-accent btn-md rounded-xl font-bold text-dark-900 shadow-glow-gold w-full sm:w-auto">
+                    <Link to="/products" className="btn-primary btn-md rounded-xl font-bold text-white shadow-glow-red w-full sm:w-auto">
                       {cta1} <ArrowRight size={18} />
                     </Link>
                     <Link to="/contact" className="btn-outline btn-md rounded-xl text-white border-white/30 hover:bg-white hover:text-dark-900 w-full sm:w-auto">
@@ -126,7 +126,7 @@ export default function HeroSection() {
               <div 
                 className="absolute inset-0"
                 style={{
-                  background: 'linear-gradient(to bottom, rgba(13, 27, 42, 0.85) 0%, rgba(13, 27, 42, 0.6) 50%, rgba(13, 27, 42, 0.9) 100%)'
+                  background: 'linear-gradient(to bottom, rgba(10, 10, 10, 0.90) 0%, rgba(10, 10, 10, 0.65) 50%, rgba(10, 10, 10, 0.95) 100%)'
                 }}
               />
             </div>
@@ -137,7 +137,7 @@ export default function HeroSection() {
                   {/* Badge */}
                   <motion.div variants={itemVariants} className="mb-4 justify-center flex">
                     <span className="inline-flex items-center gap-2 bg-primary-DEFAULT/20 border border-primary-DEFAULT/30 text-primary-300 text-sm font-semibold px-4 py-2 rounded-full backdrop-blur-sm">
-                      <span className="w-2 h-2 rounded-full bg-accent-DEFAULT animate-pulse" />
+                      <span className="w-2 h-2 rounded-full bg-primary-DEFAULT animate-pulse" />
                       Trusted by 1,000+ Industrial Clients Across India
                     </span>
                   </motion.div>
@@ -146,7 +146,7 @@ export default function HeroSection() {
                   <motion.h1 variants={itemVariants} className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight mb-4">
                     {heading.split(' ').map((word, i) =>
                       i >= heading.split(' ').length - 2 ? (
-                        <span key={i} className="text-accent-DEFAULT">{word} </span>
+                        <span key={i} className="text-primary-DEFAULT">{word} </span>
                       ) : (
                         <span key={i}>{word} </span>
                       )
@@ -160,7 +160,7 @@ export default function HeroSection() {
 
                   {/* CTAs */}
                   <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <Link to="/products" className="btn-accent btn-md rounded-xl font-bold text-dark-900 shadow-glow-gold w-full sm:w-auto">
+                    <Link to="/products" className="btn-primary btn-md rounded-xl font-bold text-white shadow-glow-red w-full sm:w-auto">
                       {cta1} <ArrowRight size={18} />
                     </Link>
                     <Link to="/contact" className="btn-outline btn-md rounded-xl text-white border-white/30 hover:bg-white hover:text-dark-900 w-full sm:w-auto">
@@ -176,7 +176,7 @@ export default function HeroSection() {
                       { value: '1,000+', label: 'Happy Clients' },
                     ].map((stat) => (
                       <div key={stat.label} className="text-center">
-                        <div className="font-heading font-bold text-xl sm:text-2xl text-accent-DEFAULT">{stat.value}</div>
+                        <div className="font-heading font-bold text-xl sm:text-2xl text-primary-DEFAULT">{stat.value}</div>
                         <div className="text-gray-400 text-xs sm:text-sm mt-0.5">{stat.label}</div>
                       </div>
                     ))}

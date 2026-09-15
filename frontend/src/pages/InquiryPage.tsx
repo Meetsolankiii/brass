@@ -79,8 +79,8 @@ export default function InquiryPage() {
               <div className="bg-white rounded-2xl shadow-premium border border-gray-100 p-8">
                 {submitted ? (
                   <div className="text-center py-16">
-                    <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4 animate-bounce">
-                      <Send size={28} className="text-green-600" />
+                    <div className="w-16 h-16 rounded-full bg-primary-50 border border-primary-100 flex items-center justify-center mx-auto mb-4 animate-bounce">
+                      <Send size={28} className="text-primary-600" />
                     </div>
                     <h3 className="font-heading font-bold text-2xl text-dark-900 mb-2">Inquiry Submitted!</h3>
                     <p className="text-gray-500 max-w-md mx-auto">Thank you for requesting a quote. Our engineering sales team will review your specifications and get back to you within 24 hours.</p>
@@ -148,7 +148,7 @@ export default function InquiryPage() {
                       {errors.requirements && <p className="form-error">{errors.requirements.message}</p>}
                     </div>
 
-                    <button type="submit" disabled={isSubmitting} className="btn-accent btn-md rounded-xl w-full flex items-center justify-center gap-2 font-bold shadow-glow-gold hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 transition-transform">
+                    <button type="submit" disabled={isSubmitting} className="btn-primary btn-md rounded-xl w-full flex items-center justify-center gap-2 font-bold shadow-glow-red hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 transition-transform">
                       {isSubmitting ? 'Sending Request...' : 'Submit Inquiry'} <Send size={16} />
                     </button>
                   </form>
@@ -162,12 +162,12 @@ export default function InquiryPage() {
             <AnimatedSection delay={0.2}>
               <div className="bg-gradient-to-br from-dark-900 via-dark-800 to-primary-950 border border-dark-600 rounded-2xl shadow-premium p-6 text-white">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-accent-DEFAULT/20 flex items-center justify-center">
-                    <HelpCircle size={20} className="text-accent-DEFAULT" />
+                  <div className="w-10 h-10 rounded-xl bg-primary-DEFAULT/20 flex items-center justify-center">
+                    <HelpCircle size={20} className="text-primary-DEFAULT" />
                   </div>
                   <div>
                     <h3 className="font-heading font-bold text-lg">Direct Sales Desk</h3>
-                    <div className="h-0.5 w-12 bg-accent-DEFAULT mt-0.5 rounded-full" />
+                    <div className="h-0.5 w-12 bg-primary-DEFAULT mt-0.5 rounded-full" />
                   </div>
                 </div>
 
@@ -179,7 +179,7 @@ export default function InquiryPage() {
                   {/* Phone */}
                   <a 
                     href={`tel:${settings?.contact_phone || ''}`}
-                    className="flex items-center gap-4 p-4 rounded-xl bg-dark-900/60 border border-dark-700/50 hover:bg-dark-900 hover:border-accent-DEFAULT transition-all group"
+                    className="flex items-center gap-4 p-4 rounded-xl bg-dark-900/60 border border-dark-700/50 hover:bg-dark-900 hover:border-primary-DEFAULT transition-all group"
                   >
                     <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 group-hover:scale-105 transition-transform shrink-0">
                       <Phone size={18} />
@@ -193,9 +193,9 @@ export default function InquiryPage() {
                   {/* Email */}
                   <a 
                     href={`mailto:${settings?.contact_email || ''}`}
-                    className="flex items-center gap-4 p-4 rounded-xl bg-dark-900/60 border border-dark-700/50 hover:bg-dark-900 hover:border-accent-DEFAULT transition-all group"
+                    className="flex items-center gap-4 p-4 rounded-xl bg-dark-900/60 border border-dark-700/50 hover:bg-dark-900 hover:border-primary-DEFAULT transition-all group"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 group-hover:scale-105 transition-transform shrink-0">
                       <Mail size={18} />
                     </div>
                     <div>
@@ -209,13 +209,13 @@ export default function InquiryPage() {
                     href={whatsappUrl}
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="flex items-center gap-4 p-4 rounded-xl bg-green-500/15 border border-green-500/30 hover:bg-green-500/20 hover:border-green-400 transition-all group"
+                    className="flex items-center gap-4 p-4 rounded-xl bg-dark-900/60 border border-dark-700/50 hover:bg-dark-900 hover:border-primary-DEFAULT transition-all group"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400 group-hover:scale-105 transition-transform shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 group-hover:scale-105 transition-transform shrink-0">
                       <MessageSquare size={18} />
                     </div>
                     <div>
-                      <div className="text-green-400 text-xs uppercase tracking-wider font-semibold">Instant WhatsApp</div>
+                      <div className="text-red-400 text-xs uppercase tracking-wider font-semibold">Instant WhatsApp</div>
                       <div className="text-white text-sm font-bold mt-0.5">Chat With Sales</div>
                     </div>
                   </a>
