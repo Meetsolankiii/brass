@@ -48,7 +48,7 @@ export default function Navbar() {
   const siteName = settingsData?.site_name || 'Chetan Brass Industries';
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 transition-all duration-300">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md border-b border-gray-200/80 transition-all duration-300">
       <nav className="container-xl">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
