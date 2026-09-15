@@ -44,11 +44,11 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link to="/" className="inline-flex mb-5">
-              <div className="bg-white px-4 py-1.5 rounded-xl h-12 flex items-center shadow-md border border-white/10 hover:scale-[1.02] transition-transform">
+              <div className="bg-white px-3.5 py-1.5 rounded-xl h-13 md:h-14 flex items-center justify-center shadow-md border border-white/10 hover:scale-[1.02] transition-transform">
                 <img
                   src={settings?.site_logo || "/images/hero/cbi-logo.png"}
                   alt={siteName}
-                  className="h-full w-auto object-contain"
+                  className="h-9 md:h-10 w-auto max-w-[200px] md:max-w-[240px] object-contain"
                 />
               </div>
             </Link>

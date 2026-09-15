@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { Upload, X, ImageIcon } from 'lucide-react';
+import { autoCropImage } from '@/utils/imageCropper';
 
 interface ImageUploaderProps {
   onFilesSelected: (files: File[]) => void;
@@ -12,8 +13,9 @@ export default function ImageUploader({ onFilesSelected, multiple = false, exist
   const [previews, setPreviews] = useState<{ file: File; url: string }[]>([]);
   const [dragging, setDragging] = useState(false);
 
-  const processFiles = useCallback((files: FileList | File[]) => {
-    const valid = Array.from(files).filter((f) => f.type.startsWith('image/') && f.size <= 5 * 1024 * 1024);
+  const processFiles = useCallback(async (files: FileList | File[]) => {
+    const rawFiles = Array.from(files).filter((f) => f.type.startsWith('image/') && f.size <= 5 * 1024 * 1024);
+    const valid = await Promise.all(rawFiles.map((f) => autoCropImage(f)));
     const newPreviews = valid.map((f) => ({ file: f, url: URL.createObjectURL(f) }));
     if (multiple) {
       setPreviews((prev) => [...prev, ...newPreviews]);
