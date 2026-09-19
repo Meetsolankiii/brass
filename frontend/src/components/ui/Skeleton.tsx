@@ -18,8 +18,12 @@ export function ProductCardSkeleton() {
 
 export function CategoryCardSkeleton() {
   return (
-    <div className="rounded-2xl overflow-hidden">
-      <Skeleton className="h-52 w-full" />
+    <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 flex flex-col">
+      <Skeleton className="aspect-square w-full" />
+      <div className="p-3.5 space-y-2">
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-3 w-1/2" />
+      </div>
     </div>
   );
 }

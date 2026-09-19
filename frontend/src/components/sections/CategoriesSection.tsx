@@ -27,26 +27,31 @@ export default function CategoriesSection() {
           <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
             {categories.map((cat) => (
               <StaggerItem key={cat.id}>
-                <Link to={`/products?category=${cat.slug}`} className="group block relative rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-premium-lg transition-all duration-300 hover:-translate-y-2">
-                  <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
+                <Link to={`/products?category=${cat.slug}`} className="group block relative rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-premium-lg transition-all duration-300 hover:-translate-y-2 border border-gray-100 flex flex-col h-full">
+                  {/* Category Image */}
+                  <div className="aspect-square bg-white p-3.5 relative overflow-hidden flex items-center justify-center border-b border-gray-100">
                     {cat.image ? (
-                      <img src={cat.image} alt={cat.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
+                      <img src={cat.image} alt={cat.name} className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Tag size={40} className="text-gray-300" />
+                      <div className="w-full h-full flex items-center justify-center bg-gray-50 rounded-xl">
+                        <Tag size={32} className="text-gray-300" />
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-dark-900/20 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <h3 className="font-heading font-semibold text-white text-sm leading-tight">{cat.name}</h3>
-                      <p className="text-gray-300 text-xs mt-0.5">{cat._count?.products || 0} Products</p>
-                    </div>
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-primary-DEFAULT/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <span className="bg-white text-primary-DEFAULT text-xs font-bold px-4 py-2 rounded-full flex items-center gap-1 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        Explore <ArrowRight size={12} />
+                    {/* Hover subtle tint & explore pill */}
+                    <div className="absolute inset-0 bg-dark-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                      <span className="bg-primary-600 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-md translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                        Explore <ArrowRight size={11} />
                       </span>
                     </div>
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="p-3.5 bg-gray-50/80 group-hover:bg-primary-50/40 transition-colors flex flex-col justify-between flex-1">
+                    <h3 className="font-heading font-bold text-dark-900 text-sm leading-snug group-hover:text-primary-600 transition-colors line-clamp-2">{cat.name}</h3>
+                    <p className="text-gray-400 text-xs mt-1.5 flex items-center justify-between">
+                      <span>{cat._count?.products || 0} Products</span>
+                      <ArrowRight size={12} className="text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </p>
                   </div>
                 </Link>
               </StaggerItem>
