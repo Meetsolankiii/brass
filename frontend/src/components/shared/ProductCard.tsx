@@ -22,40 +22,40 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-premium-lg transition-all duration-300 hover:-translate-y-2 flex flex-col"
     >
       {/* Image */}
-      <Link to={`/products/${product.slug}`} className="block relative aspect-product bg-gray-100 overflow-hidden">
+      <Link to={`/products/${product.slug}`} className="block relative aspect-product bg-white p-3 border-b border-gray-100 overflow-hidden flex items-center justify-center">
         {imageUrl && !imgError ? (
           <img
             src={imageUrl}
             alt={primaryImage?.altText || product.name}
             onError={() => setImgError(true)}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+          <div className="w-full h-full flex items-center justify-center bg-gray-50 rounded-lg">
             <div className="text-center text-gray-400">
-              <div className="w-16 h-16 mx-auto mb-2 rounded-full bg-gray-200 flex items-center justify-center">
-                <Tag size={28} className="text-gray-300" />
+              <div className="w-14 h-14 mx-auto mb-2 rounded-full bg-gray-100 flex items-center justify-center">
+                <Tag size={24} className="text-gray-300" />
               </div>
               <span className="text-xs">No Image</span>
             </div>
           </div>
         )}
         {/* Category badge */}
-        <div className="absolute top-3 left-3">
-          <span className="bg-white/90 backdrop-blur-sm text-primary-DEFAULT text-xs font-semibold px-3 py-1 rounded-full border border-primary-100 shadow-sm">
+        <div className="absolute top-3 left-3 z-10">
+          <span className="bg-white/95 backdrop-blur-sm text-primary-DEFAULT text-xs font-semibold px-3 py-1 rounded-full border border-primary-100 shadow-sm">
             {product.category?.name}
           </span>
         </div>
         {product.featured && (
-          <div className="absolute top-3 right-3">
+          <div className="absolute top-3 right-3 z-10">
             <span className="bg-primary-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">★ Featured</span>
           </div>
         )}
         {/* Overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-dark-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
-          <span className="bg-white text-primary-DEFAULT text-xs font-semibold px-4 py-2 rounded-full shadow-md flex items-center gap-1.5">
+        <div className="absolute inset-0 bg-dark-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        <div className="absolute bottom-3 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-10">
+          <span className="bg-primary-600 text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-md flex items-center gap-1.5">
             View Details <ArrowRight size={12} />
           </span>
         </div>

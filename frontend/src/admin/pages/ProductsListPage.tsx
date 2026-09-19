@@ -85,7 +85,7 @@ export default function ProductsListPage() {
                             src={primaryImg.url}
                             alt={p.name}
                             onError={() => setFailedImgs((prev) => ({ ...prev, [primaryImg.id]: true }))}
-                            className="w-12 h-12 rounded-xl object-cover"
+                            className="w-12 h-12 rounded-xl object-contain bg-white border border-gray-200 p-0.5"
                           />
                         ) : (
                           <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center"><Image size={18} className="text-gray-300" /></div>

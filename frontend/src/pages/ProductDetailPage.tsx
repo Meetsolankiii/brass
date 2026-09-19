@@ -69,7 +69,7 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           {/* Image gallery */}
           <div>
-            <div className="bg-white rounded-2xl overflow-hidden shadow-md aspect-square mb-4 relative">
+            <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 aspect-square mb-4 relative flex items-center justify-center p-4">
               <AnimatePresence mode="wait">
                 {images[activeImage] && !failedImages[images[activeImage].id] ? (
                   <motion.img
@@ -81,10 +81,10 @@ export default function ProductDetailPage() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.25 }}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                  <div className="w-full h-full flex items-center justify-center bg-gray-50 rounded-xl">
                     <Tag size={60} className="text-gray-300" />
                   </div>
                 )}
@@ -94,8 +94,8 @@ export default function ProductDetailPage() {
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {images.map((img, i) => (
                   <button key={img.id} onClick={() => setActiveImage(i)}
-                    className={`shrink-0 w-18 h-18 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${i === activeImage ? 'border-primary-DEFAULT shadow-glow-red' : 'border-gray-200 hover:border-primary-300'}`}>
-                    <img src={img.url} alt={img.altText || product.name} className="w-full h-full object-cover" />
+                    className={`shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all p-1 bg-white flex items-center justify-center ${i === activeImage ? 'border-primary-DEFAULT shadow-glow-red' : 'border-gray-200 hover:border-primary-300'}`}>
+                    <img src={img.url} alt={img.altText || product.name} className="w-full h-full object-contain" />
                   </button>
                 ))}
               </div>
