@@ -47,25 +47,26 @@ model Category {
 
 // ==================== PRODUCTS ====================
 model Product {
-  id         String          @id @default(uuid())
-  name       String
-  slug       String          @unique
-  sku        String?         @unique
-  categoryId String          @map("category_id")
-  category   Category        @relation(fields: [categoryId], references: [id])
-  shortDesc  String?         @map("short_desc")
-  fullDesc   String?         @map("full_desc")
-  price      Float?
-  status     String          @default("DRAFT")
-  featured   Boolean         @default(false)
-  stock      Int?
-  metaTitle  String?         @map("meta_title")
-  metaDesc   String?         @map("meta_desc")
-  createdAt  DateTime        @default(now()) @map("created_at")
-  updatedAt  DateTime        @updatedAt @map("updated_at")
-  images     ProductImage[]
-  features   ProductFeature[]
-  specs      ProductSpec[]
+  id                String          @id @default(uuid())
+  name              String
+  slug              String          @unique
+  sku               String?         @unique
+  categoryId        String          @map("category_id")
+  category          Category        @relation(fields: [categoryId], references: [id])
+  shortDesc         String?         @map("short_desc")
+  fullDesc          String?         @map("full_desc")
+  price             Float?
+  status            String          @default("DRAFT")
+  featured          Boolean         @default(false)
+  showNameOnHover   Boolean         @default(false) @map("show_name_on_hover")
+  stock             Int?
+  metaTitle         String?         @map("meta_title")
+  metaDesc          String?         @map("meta_desc")
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+  images            ProductImage[]
+  features          ProductFeature[]
+  specs             ProductSpec[]
 
   @@index([categoryId])
   @@index([status])

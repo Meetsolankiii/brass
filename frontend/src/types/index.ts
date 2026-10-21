@@ -49,6 +49,7 @@ export interface Product {
   price?: number;
   status: 'ACTIVE' | 'INACTIVE' | 'DRAFT';
   featured: boolean;
+  showNameOnHover: boolean;
   stock?: number;
   metaTitle?: string;
   metaDesc?: string;

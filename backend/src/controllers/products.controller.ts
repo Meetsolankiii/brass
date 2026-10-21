@@ -76,7 +76,7 @@ export async function getProduct(req: Request, res: Response): Promise<void> {
 
 export async function createProduct(req: AuthRequest, res: Response): Promise<void> {
   try {
-    const { name, categoryId, shortDesc, fullDesc, price, sku, status = 'DRAFT', featured = false, stock, metaTitle, metaDesc, features = [], specs = [] } = req.body;
+    const { name, categoryId, shortDesc, fullDesc, price, sku, status = 'DRAFT', featured = false, showNameOnHover = false, stock, metaTitle, metaDesc, features = [], specs = [] } = req.body;
     if (!name || !categoryId) { errorResponse(res, 'Name and category are required', 400); return; }
     const category = await prisma.category.findUnique({ where: { id: categoryId } });
     if (!category) { errorResponse(res, 'Category not found', 404); return; }
@@ -95,6 +95,7 @@ export async function createProduct(req: AuthRequest, res: Response): Promise<vo
         sku: (sku && String(sku).trim()) ? String(sku).trim() : null,
         status: (status as string).toUpperCase() as 'ACTIVE' | 'INACTIVE' | 'DRAFT',
         featured: Boolean(featured),
+        showNameOnHover: Boolean(showNameOnHover),
         stock: (stock !== null && stock !== '' && !isNaN(Number(stock))) ? parseInt(String(stock), 10) : null,
         metaTitle: metaTitle ? String(metaTitle).trim() : null,
         metaDesc: metaDesc ? String(metaDesc).trim() : null,
@@ -115,7 +116,7 @@ export async function updateProduct(req: AuthRequest, res: Response): Promise<vo
     const { id } = req.params;
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) { errorResponse(res, 'Product not found', 404); return; }
-    const { name, categoryId, shortDesc, fullDesc, price, sku, status, featured, stock, metaTitle, metaDesc, features, specs } = req.body;
+    const { name, categoryId, shortDesc, fullDesc, price, sku, status, featured, showNameOnHover, stock, metaTitle, metaDesc, features, specs } = req.body;
 
     let slug = existing.slug;
     if (name && name !== existing.name) {
@@ -133,6 +134,7 @@ export async function updateProduct(req: AuthRequest, res: Response): Promise<vo
     if (sku !== undefined) data.sku = (sku && String(sku).trim()) ? String(sku).trim() : null;
     if (status !== undefined) data.status = (status as string).toUpperCase();
     if (featured !== undefined) data.featured = Boolean(featured);
+    if (showNameOnHover !== undefined) data.showNameOnHover = Boolean(showNameOnHover);
     if (stock !== undefined) data.stock = (stock !== null && stock !== '' && !isNaN(Number(stock))) ? parseInt(String(stock), 10) : null;
     if (metaTitle !== undefined) data.metaTitle = metaTitle ? String(metaTitle).trim() : null;
     if (metaDesc !== undefined) data.metaDesc = metaDesc ? String(metaDesc).trim() : null;
