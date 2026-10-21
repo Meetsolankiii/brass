@@ -54,11 +54,23 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
         )}
         {/* Overlay on hover */}
         <div className="absolute inset-0 bg-dark-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-        <div className="absolute bottom-3 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-10">
-          <span className="bg-primary-600 text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-md flex items-center gap-1.5">
-            View Details <ArrowRight size={12} />
-          </span>
-        </div>
+
+        {/* Show "View Details" button OR product name on hover — admin-controlled */}
+        {product.showNameOnHover ? (
+          <div className="absolute inset-x-0 bottom-0 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-10 pointer-events-none">
+            <div className="bg-gradient-to-t from-dark-900/85 to-transparent px-3 pb-3 pt-6 rounded-b-2xl">
+              <span className="text-white text-sm font-semibold leading-snug line-clamp-2 drop-shadow">
+                {product.name}
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="absolute bottom-3 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-10">
+            <span className="bg-primary-600 text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-md flex items-center gap-1.5">
+              View Details <ArrowRight size={12} />
+            </span>
+          </div>
+        )}
       </Link>
 
       {/* Content */}
