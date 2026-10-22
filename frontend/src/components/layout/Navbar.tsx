@@ -3,7 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown, Factory, Phone } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { settingsApi, categoriesApi } from '@/services/api';
+import { settingsApi, categoriesApi, productsApi } from '@/services/api';
 import type { SiteSettings, Category } from '@/types';
 
 const navLinks = [
@@ -20,9 +20,9 @@ export default function Navbar() {
   const productsRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
-  const { data: settingsData } = useQuery({
-    queryKey: ['settings'],
-    queryFn: () => settingsApi.getAll().then((r) => r.data.data as SiteSettings),
+  const { data: productsData } = useQuery({
+    queryKey: ['navbar-products'],
+    queryFn: () => productsApi.getAll({ limit: '10' }).then((r) => r.data.data as any[]),
     staleTime: 10 * 60 * 1000,
   });
 

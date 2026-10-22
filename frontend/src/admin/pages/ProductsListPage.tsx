@@ -30,8 +30,34 @@ export default function ProductsListPage() {
     onError: () => toast.error('Failed to delete product'),
   });
 
-  // Toggle showNameOnHover with optimistic update
-  const hoverToggleMutation = useMutation({
+  // Toggle showCategoryOnHover with optimistic update
+  const categoryHoverToggleMutation = useMutation({
+    mutationFn: ({ id, value }: { id: string; value: boolean }) =>
+      productsApi.update(id, { showCategoryOnHover: value }),
+    onMutate: async ({ id, value }) => {
+      await qc.cancelQueries({ queryKey: ['admin-products', search] });
+      const prev = qc.getQueryData(['admin-products', search]);
+      qc.setQueryData(['admin-products', search], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: old.data.map((p: any) =>
+            p.id === id ? { ...p, showCategoryOnHover: value } : p
+          ),
+        };
+      });
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['admin-products', search], ctx.prev);
+      toast.error('Failed to update category hover setting');
+    },
+    onSuccess: (_data, { value }) => {
+      qc.invalidateQueries({ queryKey: ['products'] });
+      toast.success(value ? 'Category will show on hover ✓' : 'Category hover disabled');
+    },
+  });
+
     mutationFn: ({ id, value }: { id: string; value: boolean }) =>
       productsApi.update(id, { showNameOnHover: value }),
     onMutate: async ({ id, value }) => {
