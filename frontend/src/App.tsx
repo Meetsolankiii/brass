@@ -5,6 +5,7 @@ import Footer from '@/components/layout/Footer';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ProtectedRoute from '@/admin/components/ProtectedRoute';
 import { useAuthStore } from '@/store/auth.store';
+import SelfPing from '@/utils/selfPing';
 import { authApi } from '@/services/api';
 import WhatsAppButton from '@/components/shared/WhatsAppButton';
 
@@ -63,34 +64,37 @@ export default function App() {
   }
 
   return (
-    <Suspense fallback={<LoadingSpinner fullscreen />}>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
-        <Route path="/about" element={<PublicLayout><AboutPage /></PublicLayout>} />
-        <Route path="/products" element={<PublicLayout><ProductsPage /></PublicLayout>} />
-        <Route path="/products/:slug" element={<PublicLayout><ProductDetailPage /></PublicLayout>} />
-        <Route path="/inquiry" element={<PublicLayout><InquiryPage /></PublicLayout>} />
-        <Route path="/contact" element={<PublicLayout><ContactPage /></PublicLayout>} />
+    <>
+      <SelfPing />
+      <Suspense fallback={<LoadingSpinner fullscreen />}>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
+          <Route path="/about" element={<PublicLayout><AboutPage /></PublicLayout>} />
+          <Route path="/products" element={<PublicLayout><ProductsPage /></PublicLayout>} />
+          <Route path="/products/:slug" element={<PublicLayout><ProductDetailPage /></PublicLayout>} />
+          <Route path="/inquiry" element={<PublicLayout><InquiryPage /></PublicLayout>} />
+          <Route path="/contact" element={<PublicLayout><ContactPage /></PublicLayout>} />
 
-        {/* Owner routes */}
-        <Route path="/owner/login" element={<AdminLoginPage />} />
-        <Route path="/owner" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
-          <Route index element={<Navigate to="/owner/dashboard" replace />} />
-          <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="products" element={<ProductsListPage />} />
-          <Route path="products/new" element={<ProductFormPage />} />
-          <Route path="products/:id/edit" element={<ProductFormPage />} />
-          <Route path="categories" element={<CategoriesPage />} />
-          <Route path="testimonials" element={<TestimonialsPage />} />
-          <Route path="services" element={<ServicesPage />} />
-          <Route path="content" element={<SiteContentPage />} />
-          <Route path="settings" element={<AccountSettingsPage />} />
-        </Route>
+          {/* Owner routes */}
+          <Route path="/owner/login" element={<AdminLoginPage />} />
+          <Route path="/owner" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+            <Route index element={<Navigate to="/owner/dashboard" replace />} />
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="products" element={<ProductsListPage />} />
+            <Route path="products/new" element={<ProductFormPage />} />
+            <Route path="products/:id/edit" element={<ProductFormPage />} />
+            <Route path="categories" element={<CategoriesPage />} />
+            <Route path="testimonials" element={<TestimonialsPage />} />
+            <Route path="services" element={<ServicesPage />} />
+            <Route path="content" element={<SiteContentPage />} />
+            <Route path="settings" element={<AccountSettingsPage />} />
+          </Route>
 
-        {/* 404 */}
-        <Route path="*" element={<PublicLayout><NotFoundPage /></PublicLayout>} />
-      </Routes>
-    </Suspense>
+          {/* 404 */}
+          <Route path="*" element={<PublicLayout><NotFoundPage /></PublicLayout>} />
+        </Routes>
+      </Suspense>
+    </>
   );
 }
