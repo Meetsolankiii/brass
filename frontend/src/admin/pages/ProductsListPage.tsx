@@ -136,7 +136,7 @@ export default function ProductsListPage() {
       </button>
       {p.shortDesc && <div className="text-xs text-gray-400 truncate max-w-xs mt-0.5">{p.shortDesc}</div>}
     </td>
-                      <td className="px-5 py-4 text-sm text-gray-500 whitespace-nowrap">{p.category?.name}</td>
+                                            <td className="px-5 py-4 text-sm text-gray-500 whitespace-nowrap">{isHoverOn ? p.category?.name : ''}</td>
                       <td className="px-5 py-4 text-xs text-gray-400 font-mono">{p.sku || '—'}</td>
                       <td className="px-5 py-4">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${p.status === 'ACTIVE' ? 'bg-green-50 text-green-700' : p.status === 'DRAFT' ? 'bg-yellow-50 text-yellow-700' : 'bg-red-50 text-red-700'}`}>
