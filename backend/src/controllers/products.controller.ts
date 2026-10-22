@@ -16,7 +16,7 @@ export async function getProducts(req: Request, res: Response): Promise<void> {
   try {
     const { page = '1', limit = '12', search = '', category = '', status = '', featured = '', sort = 'createdAt', order = 'desc' } = req.query as Record<string, string>;
     const pageNum = Math.max(1, parseInt(page));
-    const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
+    const limitNum = Math.min(200, Math.max(1, parseInt(limit)));
     const skip = (pageNum - 1) * limitNum;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
