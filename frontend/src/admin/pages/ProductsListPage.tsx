@@ -30,34 +30,9 @@ export default function ProductsListPage() {
     onError: () => toast.error('Failed to delete product'),
   });
 
-  // Toggle showCategoryOnHover with optimistic update
-  const categoryHoverToggleMutation = useMutation({
-    mutationFn: ({ id, value }: { id: string; value: boolean }) =>
-      productsApi.update(id, { showCategoryOnHover: value }),
-    onMutate: async ({ id, value }) => {
-      await qc.cancelQueries({ queryKey: ['admin-products', search] });
-      const prev = qc.getQueryData(['admin-products', search]);
-      qc.setQueryData(['admin-products', search], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          data: old.data.map((p: any) =>
-            p.id === id ? { ...p, showCategoryOnHover: value } : p
-          ),
-        };
-      });
-      return { prev };
-    },
-    onError: (_err, _vars, ctx) => {
-      if (ctx?.prev) qc.setQueryData(['admin-products', search], ctx.prev);
-      toast.error('Failed to update category hover setting');
-    },
-    onSuccess: (_data, { value }) => {
-      qc.invalidateQueries({ queryKey: ['products'] });
-      toast.success(value ? 'Category will show on hover ✓' : 'Category hover disabled');
-    },
-  });
-
+  // Toggle showNameOnHover with optimistic update
+  // When ON → that product's category appears in the navbar dropdown
+  const hoverToggleMutation = useMutation({
     mutationFn: ({ id, value }: { id: string; value: boolean }) =>
       productsApi.update(id, { showNameOnHover: value }),
     onMutate: async ({ id, value }) => {
@@ -74,8 +49,10 @@ export default function ProductsListPage() {
       toast.error('Failed to update hover setting');
     },
     onSuccess: (_data, { value }) => {
+      // Invalidate the navbar products query so the navbar dropdown updates
+      qc.invalidateQueries({ queryKey: ['navbar-products'] });
       qc.invalidateQueries({ queryKey: ['products'] });
-      toast.success(value ? 'Name will show on hover ✓' : 'Name hover disabled');
+      toast.success(value ? 'Category will now show in navbar dropdown ✓' : 'Category removed from navbar dropdown');
     },
   });
 
@@ -103,11 +80,11 @@ export default function ProductsListPage() {
         </div>
       </div>
 
-      {/* Hover toggle legend */}
+      {/* Info banner */}
       <div className="flex items-center gap-2 text-xs text-gray-500 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2.5 w-fit">
         <Eye size={14} className="text-blue-500" />
         <span>
-          <strong className="text-blue-700">Name on Hover</strong> — click the eye icon on any product to enable/disable showing its name when a visitor hovers over the product image.
+          <strong className="text-blue-700">Name on Hover</strong> — When ON, this product's <strong>category</strong> appears in the <strong>Products navbar dropdown</strong> on the public website.
         </span>
       </div>
 
@@ -139,6 +116,7 @@ export default function ProductsListPage() {
 
                   return (
                     <tr key={p.id} className="hover:bg-gray-50 transition-colors">
+                      {/* Image */}
                       <td className="px-5 py-4">
                         {primaryImg && !failedImgs[primaryImg.id] ? (
                           <img
@@ -151,31 +129,36 @@ export default function ProductsListPage() {
                           <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center"><Image size={18} className="text-gray-300" /></div>
                         )}
                       </td>
-                          <td className="px-5 py-4">
-      <button
-        onClick={() => hoverToggleMutation.mutate({ id: p.id, value: !isHoverOn })}
-        disabled={isToggling}
-        className={`font-semibold text-sm max-w-xs truncate text-left ${isHoverOn ? 'text-primary-600' : 'text-dark-900'} ${isToggling ? 'opacity-50 cursor-wait' : 'cursor-pointer hover:underline'}`}
-        title={isHoverOn ? 'Name shown on hover — click to disable' : 'Name hidden — click to enable'}
-      >
-        {p.name}
-      </button>
-      {p.shortDesc && <div className="text-xs text-gray-400 truncate max-w-xs mt-0.5">{p.shortDesc}</div>}
-    </td>
-                                            <td className="px-5 py-4 text-sm text-gray-500 whitespace-nowrap">{isHoverOn ? p.category?.name : ''}</td>
+
+                      {/* Product name */}
+                      <td className="px-5 py-4">
+                        <div className="font-semibold text-dark-900 text-sm max-w-xs truncate">{p.name}</div>
+                        {p.shortDesc && <div className="text-xs text-gray-400 truncate max-w-xs mt-0.5">{p.shortDesc}</div>}
+                      </td>
+
+                      {/* Category — always visible */}
+                      <td className="px-5 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        {p.category?.name || <span className="text-gray-300">—</span>}
+                      </td>
+
+                      {/* SKU */}
                       <td className="px-5 py-4 text-xs text-gray-400 font-mono">{p.sku || '—'}</td>
+
+                      {/* Status */}
                       <td className="px-5 py-4">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${p.status === 'ACTIVE' ? 'bg-green-50 text-green-700' : p.status === 'DRAFT' ? 'bg-yellow-50 text-yellow-700' : 'bg-red-50 text-red-700'}`}>
                           {p.status}
                         </span>
                       </td>
+
+                      {/* Featured */}
                       <td className="px-5 py-4 text-sm">{p.featured ? <span className="text-accent-DEFAULT font-bold">★</span> : <span className="text-gray-300">—</span>}</td>
 
-                      {/* ── Name on Hover toggle ── */}
+                      {/* Name on Hover toggle */}
                       <td className="px-5 py-4">
                         <button
                           id={`hover-toggle-${p.id}`}
-                          title={isHoverOn ? 'Name shown on hover — click to disable' : 'Name hidden — click to enable'}
+                          title={isHoverOn ? 'Category shown in navbar — click to hide' : 'Category hidden from navbar — click to show'}
                           disabled={isToggling}
                           onClick={() => hoverToggleMutation.mutate({ id: p.id, value: !isHoverOn })}
                           className={`
@@ -191,6 +174,7 @@ export default function ProductsListPage() {
                         </button>
                       </td>
 
+                      {/* Actions */}
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-2">
                           <Link to={`/owner/products/${p.id}/edit`} className="p-1.5 rounded-lg hover:bg-primary-50 text-primary-DEFAULT transition-colors"><Pencil size={15} /></Link>
@@ -222,5 +206,3 @@ export default function ProductsListPage() {
 function Package({ size, className }: { size: number; className?: string }) {
   return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/></svg>;
 }
-
-
