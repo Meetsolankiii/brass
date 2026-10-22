@@ -125,10 +125,17 @@ export default function ProductsListPage() {
                           <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center"><Image size={18} className="text-gray-300" /></div>
                         )}
                       </td>
-                      <td className="px-5 py-4">
-                        <div className="font-semibold text-dark-900 text-sm max-w-xs truncate">{p.name}</div>
-                        {p.shortDesc && <div className="text-xs text-gray-400 truncate max-w-xs mt-0.5">{p.shortDesc}</div>}
-                      </td>
+                          <td className="px-5 py-4">
+      <button
+        onClick={() => hoverToggleMutation.mutate({ id: p.id, value: !isHoverOn })}
+        disabled={isToggling}
+        className={`font-semibold text-sm max-w-xs truncate text-left ${isHoverOn ? 'text-primary-600' : 'text-dark-900'} ${isToggling ? 'opacity-50 cursor-wait' : 'cursor-pointer hover:underline'}`}
+        title={isHoverOn ? 'Name shown on hover — click to disable' : 'Name hidden — click to enable'}
+      >
+        {p.name}
+      </button>
+      {p.shortDesc && <div className="text-xs text-gray-400 truncate max-w-xs mt-0.5">{p.shortDesc}</div>}
+    </td>
                       <td className="px-5 py-4 text-sm text-gray-500 whitespace-nowrap">{p.category?.name}</td>
                       <td className="px-5 py-4 text-xs text-gray-400 font-mono">{p.sku || '—'}</td>
                       <td className="px-5 py-4">
