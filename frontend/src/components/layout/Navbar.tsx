@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, Factory, Phone } from 'lucide-react';
+import { Menu, X, ChevronDown, Phone } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { settingsApi, categoriesApi, productsApi } from '@/services/api';
-import type { SiteSettings, Category } from '@/types';
+import { settingsApi, productsApi } from '@/services/api';
+import type { SiteSettings } from '@/types';
 
 const navLinks = [
   { to: '/', label: 'Home' },
@@ -20,17 +20,38 @@ export default function Navbar() {
   const productsRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
-  const { data: productsData } = useQuery({
-    queryKey: ['navbar-products'],
-    queryFn: () => productsApi.getAll({ limit: '10' }).then((r) => r.data.data as any[]),
+  const { data: settingsData } = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => settingsApi.getAll().then((r) => r.data.data as SiteSettings),
     staleTime: 10 * 60 * 1000,
   });
 
-  const { data: categoriesData } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => categoriesApi.getAll().then((r) => r.data.data as Category[]),
-    staleTime: 10 * 60 * 1000,
+  // Fetch all products (large limit) to derive the navbar categories dynamically.
+  // The admin controls which product categories appear in the dropdown via
+  // the "Name on Hover" (showNameOnHover) toggle in the Admin Panel.
+  const { data: navProductsData } = useQuery({
+    queryKey: ['navbar-products'],
+    queryFn: () => productsApi.getAll({ limit: '200' }).then((r) => r.data.data as any[]),
+    staleTime: 5 * 60 * 1000,
   });
+
+  // Derive unique categories from products that have showNameOnHover = true
+  const navCategories = (() => {
+    if (!navProductsData) return [];
+    const seen = new Set<string>();
+    const result: { id: string; name: string; slug: string }[] = [];
+    for (const p of navProductsData) {
+      if (p.showNameOnHover && p.category?.id && !seen.has(p.category.id)) {
+        seen.add(p.category.id);
+        result.push({
+          id: p.category.id,
+          name: p.category.name,
+          slug: p.category.slug,
+        });
+      }
+    }
+    return result;
+  })();
 
   useEffect(() => {
     setIsOpen(false);
@@ -54,7 +75,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center group py-2">
             <img
-              src={settingsData?.site_logo || "/images/hero/cbi-logo.png"}
+              src={settingsData?.site_logo || '/images/hero/cbi-logo.png'}
               alt={siteName}
               className="h-12 md:h-14 w-auto max-w-[260px] md:max-w-[300px] object-contain mix-blend-multiply transition-transform group-hover:scale-[1.02]"
             />
@@ -101,11 +122,17 @@ export default function Navbar() {
                         className="absolute top-full left-0 w-60 pt-2 z-50"
                       >
                         <div className="bg-white border border-gray-100 rounded-2xl shadow-premium-lg overflow-hidden py-1">
+                          {/* Always show "All Products" */}
                           <Link to="/products" className="block px-4 py-2.5 text-sm text-gray-800 hover:text-primary-600 hover:bg-primary-50 font-bold border-b border-gray-100 transition-colors">
                             All Products
                           </Link>
-                          {categoriesData?.filter((c) => c.isActive !== false).slice(0, 5).map((cat) => (
-                            <Link key={cat.id} to={`/products?category=${cat.slug}`} className="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-colors">
+                          {/* Dynamic: only categories whose products have showNameOnHover = ON */}
+                          {navCategories.map((cat) => (
+                            <Link
+                              key={cat.id}
+                              to={`/products?category=${cat.slug}`}
+                              className="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-colors"
+                            >
                               {cat.name}
                             </Link>
                           ))}
@@ -194,10 +221,15 @@ export default function Navbar() {
                   >
                     {link.label}
                   </NavLink>
-                  {link.hasDropdown && (
+                  {/* Mobile: show only enabled categories */}
+                  {link.hasDropdown && navCategories.length > 0 && (
                     <div className="pl-4 mt-1 flex flex-col gap-0.5">
-                      {categoriesData?.filter((c) => c.isActive !== false).slice(0, 5).map((cat) => (
-                        <Link key={cat.id} to={`/products?category=${cat.slug}`} className="px-4 py-2 text-xs text-gray-500 hover:text-primary-600 rounded-lg hover:bg-gray-50 transition-colors">
+                      {navCategories.map((cat) => (
+                        <Link
+                          key={cat.id}
+                          to={`/products?category=${cat.slug}`}
+                          className="px-4 py-2 text-xs text-gray-500 hover:text-primary-600 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
                           {cat.name}
                         </Link>
                       ))}
