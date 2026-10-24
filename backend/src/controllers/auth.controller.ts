@@ -11,7 +11,7 @@ const COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
-  maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
+  maxAge: 24 * 60 * 60 * 1000, // 24 hours
   path: '/',
 };
 
