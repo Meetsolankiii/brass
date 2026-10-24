@@ -70,7 +70,10 @@ app.use(cookieParser());
 app.use(compression() as express.RequestHandler);
 
 // ── Static files (uploaded images) ───────────────────────────
-app.use('/api/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use('/api/uploads', express.static(path.join(process.cwd(), 'uploads'), {
+  maxAge: '7d',
+  immutable: true,
+}));
 
 // ── API routes ────────────────────────────────────────────────
 app.use('/api', apiRouter);

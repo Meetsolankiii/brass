@@ -17,6 +17,7 @@ export async function getCategories(req: Request, res: Response): Promise<void> 
       orderBy: [{ order: 'asc' }, { name: 'asc' }],
       include: { _count: { select: { products: true } } },
     });
+    if (!req.headers.authorization) res.setHeader('Cache-Control', 'public, max-age=600, stale-while-revalidate=7200');
     successResponse(res, categories);
   } catch { errorResponse(res, 'Failed to fetch categories', 500); }
 }

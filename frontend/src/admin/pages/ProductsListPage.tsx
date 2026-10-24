@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Pencil, Trash2, Search, Image, X } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, Image, X, Sparkles } from 'lucide-react';
 import { productsApi } from '@/services/api';
 import ConfirmModal from '@/admin/components/ConfirmModal';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -18,6 +18,27 @@ export default function ProductsListPage() {
     queryKey: ['admin-products', search],
     queryFn: () => productsApi.getAll({ search, limit: '50' }).then((r) => r.data as PaginatedResponse<Product>),
   });
+
+  const [isCompressing, setIsCompressing] = useState(false);
+
+  const compressMutation = useMutation({
+    mutationFn: () => productsApi.compressAllImages(),
+    onSuccess: (res: any) => {
+      qc.invalidateQueries({ queryKey: ['admin-products'] });
+      qc.invalidateQueries({ queryKey: ['products'] });
+      toast.success(res?.data?.message || 'All images compressed to WebP successfully!');
+      setIsCompressing(false);
+    },
+    onError: () => {
+      toast.error('Failed to compress images');
+      setIsCompressing(false);
+    },
+  });
+
+  const handleCompress = () => {
+    setIsCompressing(true);
+    compressMutation.mutate();
+  };
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => productsApi.delete(id),
@@ -40,9 +61,21 @@ export default function ProductsListPage() {
           <h2 className="font-heading font-bold text-2xl text-dark-900">Products</h2>
           <p className="text-gray-500 text-sm">{data?.pagination?.total || 0} total products</p>
         </div>
-        <Link to="/owner/products/new" className="btn-primary btn-md rounded-xl">
-          <Plus size={16} /> Add Product
-        </Link>
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={handleCompress}
+            disabled={isCompressing}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-amber-500 text-white hover:bg-amber-600 transition-colors shadow-sm disabled:opacity-50"
+            title="Compress all legacy images in database to WebP for instant loading"
+          >
+            <Sparkles size={15} className={isCompressing ? 'animate-spin' : ''} />
+            {isCompressing ? 'Optimizing Images...' : '⚡ Optimize All Images'}
+          </button>
+          <Link to="/owner/products/new" className="btn-primary btn-md rounded-xl">
+            <Plus size={16} /> Add Product
+          </Link>
+        </div>
       </div>
 
       {/* Search */}

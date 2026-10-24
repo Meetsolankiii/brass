@@ -96,6 +96,8 @@ export const productsApi = {
     return api.post(`/products/${id}/images`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
   deleteImage: (productId: string, imageId: string) => api.delete(`/products/${productId}/images/${imageId}`),
+  updateImage: (productId: string, imageId: string, url: string) => api.put(`/products/${productId}/images/${imageId}`, { url }),
+  compressAllImages: () => api.post('/products/compress-all-images'),
 };
 
 // ── Categories ───────────────────────────────────────────────

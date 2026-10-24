@@ -1,3 +1,4 @@
+import { compressLegacyImages } from '../utils/compressLegacyImages';
 import { Request, Response } from 'express';
 import { prisma } from '../utils/prisma';
 import { successResponse, errorResponse, paginatedResponse } from '../utils/response';
@@ -44,6 +45,7 @@ export async function getProducts(req: Request, res: Response): Promise<void> {
       }),
       prisma.product.count({ where }),
     ]);
+    if (!req.headers.authorization) res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
     paginatedResponse(res, products, total, pageNum, limitNum);
   } catch (error) {
     console.error('Get products error:', error);
@@ -224,5 +226,33 @@ export async function deleteProductImage(req: AuthRequest, res: Response): Promi
   } catch (error) {
     console.error('Delete image error:', error);
     errorResponse(res, 'Failed to delete image', 500);
+  }
+}
+
+export async function updateProductImage(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const { id, imageId } = req.params;
+    const { url } = req.body;
+    if (!url) { errorResponse(res, 'url is required', 400); return; }
+    const image = await prisma.productImage.findFirst({ where: { id: imageId, productId: id } });
+    if (!image) { errorResponse(res, 'Image not found', 404); return; }
+    const updated = await prisma.productImage.update({
+      where: { id: imageId },
+      data: { url },
+    });
+    successResponse(res, updated, 'Image updated successfully');
+  } catch (error) {
+    console.error('Update image error:', error);
+    errorResponse(res, 'Failed to update image', 500);
+  }
+}
+
+export async function triggerCompressAllImages(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const result = await compressLegacyImages();
+    successResponse(res, result, `Optimization finished! Compressed ${result.compressed} images, saved ${(result.savedBytes / (1024 * 1024)).toFixed(2)} MB.`);
+  } catch (error) {
+    console.error('Trigger compress all images error:', error);
+    errorResponse(res, 'Failed to compress images', 500);
   }
 }

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
   getProducts, getProduct, createProduct, updateProduct, deleteProduct,
-  uploadProductImages, deleteProductImage,
+  uploadProductImages, deleteProductImage, updateProductImage, triggerCompressAllImages,
 } from '../controllers/products.controller';
 import { authenticate, requireAdmin } from '../middleware/auth.middleware';
 import { upload, setUploadSubfolder } from '../middleware/upload.middleware';
@@ -13,6 +13,7 @@ router.get('/', getProducts);
 router.get('/:slug', getProduct);
 
 // Admin protected
+router.post('/compress-all-images', authenticate, requireAdmin, triggerCompressAllImages);
 router.post('/', authenticate, requireAdmin, createProduct);
 router.put('/:id', authenticate, requireAdmin, updateProduct);
 router.delete('/:id', authenticate, requireAdmin, deleteProduct);
@@ -25,6 +26,7 @@ router.post(
   uploadProductImages
 );
 
+router.put('/:id/images/:imageId', authenticate, requireAdmin, updateProductImage);
 router.delete('/:id/images/:imageId', authenticate, requireAdmin, deleteProductImage);
 
 export default router;
