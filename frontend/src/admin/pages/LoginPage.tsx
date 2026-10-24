@@ -64,13 +64,13 @@ export default function LoginPage() {
           }
         });
       } else {
-        const { accessToken, user } = resData as AuthData;
+        const { accessToken, refreshToken, user } = resData as AuthData;
         setAlert({
           type: 'success',
           title: 'Success Login',
           message: 'Welcome back! Redirecting you to the dashboard...',
           onConfirm: () => {
-            setAuth(accessToken, user as AdminUser);
+            setAuth(accessToken, user as AdminUser, refreshToken);
             navigate('/owner/dashboard');
           }
         });
@@ -99,14 +99,14 @@ export default function LoginPage() {
     try {
       setIsVerifyingOtp(true);
       const res = await authApi.verifyOtp({ mfaToken: mfaToken!, otp });
-      const { accessToken, user } = (res.data as ApiResponse<AuthData>).data;
+      const { accessToken, refreshToken, user } = (res.data as ApiResponse<AuthData>).data;
       
       setAlert({
         type: 'success',
         title: 'Successful Login',
         message: 'Security check passed! Click OK to launch the owner panel.',
         onConfirm: () => {
-          setAuth(accessToken, user as AdminUser);
+          setAuth(accessToken, user as AdminUser, refreshToken);
           navigate('/owner/dashboard');
         }
       });

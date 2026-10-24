@@ -11,7 +11,7 @@ const COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
-  maxAge: 7 * 24 * 60 * 60 * 1000,
+  maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
   path: '/',
 };
 
@@ -186,6 +186,7 @@ export async function verifyOtp(req: Request, res: Response): Promise<void> {
     res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
     successResponse(res, {
       accessToken,
+      refreshToken,
       user: { id: admin.id, username: admin.username, email: admin.email, firstName: admin.firstName, lastName: admin.lastName, role: admin.role },
     }, 'Login successful');
   } catch (error) {
@@ -201,13 +202,16 @@ export function logout(_req: Request, res: Response): void {
 
 export async function refreshToken(req: Request, res: Response): Promise<void> {
   try {
-    const token = req.cookies?.refreshToken;
+    const token = req.cookies?.refreshToken || req.body?.refreshToken;
     if (!token) { errorResponse(res, 'Refresh token not found', 401); return; }
     const payload = verifyRefreshToken(token);
     const admin = await prisma.adminUser.findFirst({ where: { id: payload.id, isActive: true } });
     if (!admin) { errorResponse(res, 'User not found', 401); return; }
     const newPayload = { id: admin.id, username: admin.username, role: admin.role };
-    successResponse(res, { accessToken: signAccessToken(newPayload) }, 'Token refreshed');
+    const newAccessToken = signAccessToken(newPayload);
+    const newRefreshToken = signRefreshToken(newPayload);
+    res.cookie('refreshToken', newRefreshToken, COOKIE_OPTIONS);
+    successResponse(res, { accessToken: newAccessToken, refreshToken: newRefreshToken }, 'Token refreshed');
   } catch {
     res.clearCookie('refreshToken');
     errorResponse(res, 'Invalid refresh token', 401);

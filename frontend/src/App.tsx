@@ -50,8 +50,11 @@ export default function App() {
       if (isAuthenticated) {
         try {
           await authApi.getMe();
-        } catch {
-          logout();
+        } catch (err: any) {
+          // Only log out if backend explicitly rejected auth (401)
+          if (err?.response?.status === 401) {
+            logout();
+          }
         }
       }
       setIsValidating(false);

@@ -43,14 +43,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link to="/" className="inline-flex mb-5">
-              <div className="bg-white px-4 py-2 rounded-2xl flex items-center justify-center shadow-lg border border-white/20 hover:scale-[1.02] transition-transform">
-                <img
-                  src={settings?.site_logo || "/images/hero/cbi-logo.png"}
-                  alt={siteName}
-                  className="h-11 md:h-12 w-auto max-w-[240px] md:max-w-[280px] object-contain"
-                />
-              </div>
+            <Link to="/" className="inline-flex items-center mb-5 group">
+              <img
+                src={settings?.site_logo || "/images/hero/cbi-logo.png"}
+                alt={siteName}
+                className="h-12 md:h-14 w-auto max-w-[260px] md:max-w-[290px] object-contain transition-transform group-hover:scale-[1.02] drop-shadow-[0_2px_8px_rgba(255,255,255,0.08)]"
+              />
             </Link>
             <p className="text-sm leading-relaxed mb-6">{settings?.site_description || 'Leading supplier of industrial machinery, precision parts, and safety equipment.'}</p>
             <div className="flex gap-3">

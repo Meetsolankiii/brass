@@ -167,6 +167,7 @@ export interface ProductFormData {
 
 export interface AuthData {
   accessToken: string;
+  refreshToken?: string;
   user: AdminUser;
 }
 

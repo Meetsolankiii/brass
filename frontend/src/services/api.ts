@@ -61,9 +61,15 @@ api.interceptors.response.use(
       if (isRefreshing) return new Promise((resolve, reject) => queue.push({ resolve, reject })).then((t) => { orig.headers.Authorization = `Bearer ${t}`; return api(orig); });
       orig._retry = true; isRefreshing = true;
       try {
-        const { data } = await axios.post(`${BASE_URL}/auth/refresh`, {}, { withCredentials: true });
+        const storedRefreshToken = useAuthStore.getState().refreshToken;
+        const { data } = await axios.post(
+          `${BASE_URL}/auth/refresh`,
+          { refreshToken: storedRefreshToken },
+          { withCredentials: true }
+        );
         const token = data.data.accessToken;
-        useAuthStore.getState().setAccessToken(token);
+        const newRefreshToken = data.data.refreshToken;
+        useAuthStore.getState().setAccessToken(token, newRefreshToken);
         drainQueue(null, token);
         orig.headers.Authorization = `Bearer ${token}`;
         return api(orig);

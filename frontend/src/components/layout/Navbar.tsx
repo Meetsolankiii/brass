@@ -17,6 +17,7 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [productsOpen, setProductsOpen] = useState(false);
+  const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
   const productsRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
@@ -41,6 +42,7 @@ export default function Navbar() {
   useEffect(() => {
     setIsOpen(false);
     setProductsOpen(false);
+    setMobileCategoriesOpen(false);
   }, [location]);
 
   useEffect(() => {
@@ -210,38 +212,103 @@ export default function Navbar() {
             <div className="container-xl py-4 flex flex-col gap-1 max-h-[80vh] overflow-y-auto">
               {navLinks.map((link) => (
                 <div key={link.to}>
-                  <NavLink
-                    to={link.to}
-                    end={link.to === '/'}
-                    className={({ isActive }) =>
-                      `block px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
-                        isActive
-                          ? 'text-primary-600 bg-primary-50 font-bold border-l-4 border-primary-600'
-                          : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50'
-                      }`
-                    }
-                  >
-                    {link.label}
-                  </NavLink>
-                  {/* Mobile: list all active categories under Products */}
-                  {link.hasDropdown && navCategories.length > 0 && (
-                    <div className="pl-4 mt-1 flex flex-col gap-0.5">
-                      <Link
-                        to="/products"
-                        className="px-4 py-2 text-xs font-bold text-gray-800 hover:text-primary-600 rounded-lg hover:bg-gray-50 transition-colors"
-                      >
-                        All Products
-                      </Link>
-                      {navCategories.map((cat) => (
-                        <Link
-                          key={cat.id}
-                          to={`/products?category=${cat.slug}`}
-                          className="px-4 py-2 text-xs text-gray-600 hover:text-primary-600 rounded-lg hover:bg-gray-50 transition-colors"
+                  {link.hasDropdown ? (
+                    <div className="rounded-xl overflow-hidden">
+                      <div className="flex items-center justify-between">
+                        <NavLink
+                          to={link.to}
+                          end={link.to === '/'}
+                          onClick={() => setIsOpen(false)}
+                          className={({ isActive }) =>
+                            `flex-1 px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
+                              isActive
+                                ? 'text-primary-600 bg-primary-50 font-bold border-l-4 border-primary-600'
+                                : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50'
+                            }`
+                          }
                         >
-                          {cat.name}
-                        </Link>
-                      ))}
+                          {link.label}
+                        </NavLink>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setMobileCategoriesOpen((prev) => !prev);
+                          }}
+                          className={`p-2.5 mr-1 rounded-lg transition-all ${
+                            mobileCategoriesOpen
+                              ? 'bg-primary-50 text-primary-600'
+                              : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                          }`}
+                          aria-label="Toggle products categories"
+                          title="Show categories"
+                        >
+                          <ChevronDown
+                            size={18}
+                            className={`transition-transform duration-300 ${
+                              mobileCategoriesOpen ? 'rotate-180 text-primary-600 stroke-[2.5]' : 'stroke-2'
+                            }`}
+                          />
+                        </button>
+                      </div>
+
+                      {/* Expandable categories accordion on mobile */}
+                      <AnimatePresence>
+                        {mobileCategoriesOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.22, ease: 'easeInOut' }}
+                            className="overflow-hidden pl-4 pr-2 pt-1 pb-2 flex flex-col gap-1 border-l-2 border-primary-200 ml-4 my-1"
+                          >
+                            <Link
+                              to="/products"
+                              onClick={() => {
+                                setMobileCategoriesOpen(false);
+                                setIsOpen(false);
+                              }}
+                              className="flex items-center justify-between px-3.5 py-2 text-xs font-bold text-gray-900 bg-gray-50 hover:bg-primary-50 hover:text-primary-600 rounded-lg transition-colors"
+                            >
+                              <span>All Products</span>
+                              <span className="text-[10px] font-semibold bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full">
+                                All
+                              </span>
+                            </Link>
+                            {navCategories.map((cat) => (
+                              <Link
+                                key={cat.id}
+                                to={`/products?category=${cat.slug}`}
+                                onClick={() => {
+                                  setMobileCategoriesOpen(false);
+                                  setIsOpen(false);
+                                }}
+                                className="flex items-center gap-2 px-3.5 py-2 text-xs text-gray-700 hover:text-primary-600 hover:bg-primary-50/70 rounded-lg transition-colors font-medium"
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary-500 shrink-0" />
+                                <span className="truncate">{cat.name}</span>
+                              </Link>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
+                  ) : (
+                    <NavLink
+                      to={link.to}
+                      end={link.to === '/'}
+                      onClick={() => setIsOpen(false)}
+                      className={({ isActive }) =>
+                        `block px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
+                          isActive
+                            ? 'text-primary-600 bg-primary-50 font-bold border-l-4 border-primary-600'
+                            : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50'
+                        }`
+                      }
+                    >
+                      {link.label}
+                    </NavLink>
                   )}
                 </div>
               ))}
