@@ -1,28 +1,42 @@
 import { useEffect } from 'react';
 
 /**
- * SelfPing component sends a request to the backend health endpoint every 14 minutes
- * to keep the Render free tier instance awake. It does not render any UI.
+ * SelfPing keeps the Render free-tier backend instance awake.
+ * Render spins down after 15 minutes of inactivity.
+ * By pinging the live health endpoint every 9.5 minutes directly,
+ * we keep the instance warm so users never face cold-start delays.
  */
+const PING_INTERVAL = 9.5 * 60 * 1000; // 9.5 minutes
+
+// In production, must ping the Render backend directly (not relative /api/health which hits Vercel)
+const HEALTH_URL = import.meta.env.PROD
+  ? 'https://brass-q9gb.onrender.com/api/health'
+  : (import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/health` : 'http://localhost:5000/api/health');
+
 export default function SelfPing() {
   useEffect(() => {
     const ping = async () => {
       try {
-        // Adjust the URL if your frontend is served from a different origin
-        await fetch('/api/health', { method: 'GET', cache: 'no-store' });
+        await fetch(HEALTH_URL, {
+          method: 'GET',
+          cache: 'no-store',
+          mode: 'cors',
+        });
+        console.debug('[SelfPing] Backend keep-alive ping sent to:', HEALTH_URL);
       } catch (err) {
-        // Silently ignore errors; the ping is just to keep the server awake
-        console.debug('Self-ping failed', err);
+        // Silently ignore ping errors; this is just a background keep-alive
+        console.debug('[SelfPing] Ping attempt finished:', err);
       }
     };
 
-    // Initial ping on mount
+    // Immediate ping on mount to wake/warm up the server immediately
     ping();
-    // Set interval for every 14 minutes (840,000 ms)
-    const intervalId = setInterval(ping, 14 * 60 * 1000);
+
+    // Schedule regular keep-alive ping
+    const intervalId = setInterval(ping, PING_INTERVAL);
     return () => clearInterval(intervalId);
   }, []);
 
-  // No UI output
   return null;
 }
+

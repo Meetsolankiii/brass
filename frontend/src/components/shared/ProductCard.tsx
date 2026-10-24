@@ -16,20 +16,24 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
+      transition={{ duration: 0.3, delay: Math.min(index * 0.04, 0.3) }}
       className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-premium-lg transition-all duration-300 hover:-translate-y-2 flex flex-col"
     >
       {/* Image */}
-      <Link to={`/products/${product.slug}`} className="block relative aspect-product bg-white p-3 border-b border-gray-100 overflow-hidden flex items-center justify-center">
+      <Link
+        to={`/products/${product.slug}`}
+        className="block relative aspect-product bg-white p-3 border-b border-gray-100 overflow-hidden flex items-center justify-center"
+      >
         {imageUrl && !imgError ? (
           <img
             src={imageUrl}
             alt={primaryImage?.altText || product.name}
             onError={() => setImgError(true)}
             className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
+            loading="eager"
+            decoding="async"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-50 rounded-lg">
@@ -41,21 +45,26 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             </div>
           </div>
         )}
+
         {/* Category badge */}
         <div className="absolute top-3 left-3 z-10">
           <span className="bg-white/95 backdrop-blur-sm text-primary-DEFAULT text-xs font-semibold px-3 py-1 rounded-full border border-primary-100 shadow-sm">
             {product.category?.name}
           </span>
         </div>
+
         {product.featured && (
           <div className="absolute top-3 right-3 z-10">
-            <span className="bg-primary-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">★ Featured</span>
+            <span className="bg-primary-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+              ★ Featured
+            </span>
           </div>
         )}
+
         {/* Overlay on hover */}
         <div className="absolute inset-0 bg-dark-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-        {/* Show "View Details" button OR product name on hover — admin-controlled */}
+        {/* Show "View Details" button OR product name on hover */}
         {product.showNameOnHover ? (
           <div className="absolute inset-x-0 bottom-0 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-10 pointer-events-none">
             <div className="bg-gradient-to-t from-dark-900/85 to-transparent px-3 pb-3 pt-6 rounded-b-2xl">
@@ -79,9 +88,11 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           <Link to={`/products/${product.slug}`}>{product.name}</Link>
         </h3>
         {product.shortDesc && (
-          <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-4 flex-1">{product.shortDesc}</p>
+          <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-4 flex-1">
+            {product.shortDesc}
+          </p>
         )}
-        {product.sku && <p className="text-xs text-gray-400 mb-3">SKU: {product.sku}</p>}
+        {product.sku && <p className="text-xs text-gray-400 mb-3 font-mono">SKU: {product.sku}</p>}
         <Link
           to={`/products/${product.slug}`}
           className="flex items-center gap-2 text-primary-DEFAULT text-sm font-semibold hover:gap-3 transition-all duration-200 mt-auto"

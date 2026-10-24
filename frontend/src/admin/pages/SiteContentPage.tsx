@@ -142,6 +142,7 @@ export default function SiteContentPage() {
                 }}
                 existingImages={local.site_logo ? [{ id: 'site_logo', url: local.site_logo }] : []}
                 multiple={false}
+                mode='logo'
               />
             </div>
           )}

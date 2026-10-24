@@ -3,8 +3,8 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown, Phone } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { settingsApi, productsApi } from '@/services/api';
-import type { SiteSettings } from '@/types';
+import { settingsApi, categoriesApi } from '@/services/api';
+import type { SiteSettings, Category } from '@/types';
 
 const navLinks = [
   { to: '/', label: 'Home' },
@@ -26,32 +26,17 @@ export default function Navbar() {
     staleTime: 10 * 60 * 1000,
   });
 
-  // Fetch all products (large limit) to derive the navbar categories dynamically.
-  // The admin controls which product categories appear in the dropdown via
-  // the "Name on Hover" (showNameOnHover) toggle in the Admin Panel.
-  const { data: navProductsData } = useQuery({
-    queryKey: ['navbar-products'],
-    queryFn: () => productsApi.getAll({ limit: '200' }).then((r) => r.data.data as any[]),
+  // Fetch categories directly. The admin controls which categories appear by toggling
+  // "Showcase on Website" in Admin Panel -> Categories.
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => categoriesApi.getAll().then((r) => r.data.data as Category[]),
     staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
-  // Derive unique categories from products that have showNameOnHover = true
-  const navCategories = (() => {
-    if (!navProductsData) return [];
-    const seen = new Set<string>();
-    const result: { id: string; name: string; slug: string }[] = [];
-    for (const p of navProductsData) {
-      if (p.showNameOnHover && p.category?.id && !seen.has(p.category.id)) {
-        seen.add(p.category.id);
-        result.push({
-          id: p.category.id,
-          name: p.category.name,
-          slug: p.category.slug,
-        });
-      }
-    }
-    return result;
-  })();
+  // Display only active categories that the admin has set to Showcase
+  const navCategories = categoriesData?.filter((cat) => cat.isActive) || [];
 
   useEffect(() => {
     setIsOpen(false);
@@ -60,7 +45,9 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (productsRef.current && !productsRef.current.contains(e.target as Node)) setProductsOpen(false);
+      if (productsRef.current && !productsRef.current.contains(e.target as Node)) {
+        setProductsOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
@@ -102,7 +89,12 @@ export default function Navbar() {
                     }`}
                   >
                     {link.label}
-                    <ChevronDown size={14} className={`transition-transform duration-200 ${productsOpen ? 'rotate-180 text-primary-600' : ''}`} />
+                    <ChevronDown
+                      size={14}
+                      className={`transition-transform duration-200 ${
+                        productsOpen ? 'rotate-180 text-primary-600' : ''
+                      }`}
+                    />
                     {/* Red hover & active underline */}
                     <span
                       className={`absolute bottom-0 left-4 right-4 h-0.5 bg-primary-600 rounded-full transition-all duration-300 ${
@@ -119,19 +111,24 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.97 }}
                         transition={{ duration: 0.18 }}
-                        className="absolute top-full left-0 w-60 pt-2 z-50"
+                        className="absolute top-full left-0 w-72 pt-2 z-50"
                       >
-                        <div className="bg-white border border-gray-100 rounded-2xl shadow-premium-lg overflow-hidden py-1">
+                        <div className="bg-white border border-gray-100 rounded-2xl shadow-premium-lg overflow-hidden py-1.5 max-h-[420px] overflow-y-auto scrollbar-thin">
                           {/* Always show "All Products" */}
-                          <Link to="/products" className="block px-4 py-2.5 text-sm text-gray-800 hover:text-primary-600 hover:bg-primary-50 font-bold border-b border-gray-100 transition-colors">
+                          <Link
+                            to="/products"
+                            onClick={() => setProductsOpen(false)}
+                            className="block px-4 py-2.5 text-sm text-gray-900 hover:text-primary-600 hover:bg-primary-50 font-bold border-b border-gray-100 transition-colors"
+                          >
                             All Products
                           </Link>
-                          {/* Dynamic: only categories whose products have showNameOnHover = ON */}
+                          {/* Dynamic: all active categories toggled by admin */}
                           {navCategories.map((cat) => (
                             <Link
                               key={cat.id}
                               to={`/products?category=${cat.slug}`}
-                              className="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-colors"
+                              onClick={() => setProductsOpen(false)}
+                              className="block px-4 py-2.5 text-sm text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-colors font-medium"
                             >
                               {cat.name}
                             </Link>
@@ -181,7 +178,10 @@ export default function Navbar() {
               <Phone size={15} className="shrink-0 text-primary-600" />
               <span>{settingsData?.contact_phone || '+91 98765 43210'}</span>
             </a>
-            <Link to="/contact" className="btn-primary btn-sm rounded-xl px-5 py-2.5 text-sm font-bold shadow-md hover:shadow-glow-red transition-all">
+            <Link
+              to="/contact"
+              className="btn-primary btn-sm rounded-xl px-5 py-2.5 text-sm font-bold shadow-md hover:shadow-glow-red transition-all"
+            >
               Get Quote
             </Link>
           </div>
@@ -207,7 +207,7 @@ export default function Navbar() {
             transition={{ duration: 0.25 }}
             className="lg:hidden bg-white border-t border-gray-100 shadow-xl overflow-hidden"
           >
-            <div className="container-xl py-4 flex flex-col gap-1">
+            <div className="container-xl py-4 flex flex-col gap-1 max-h-[80vh] overflow-y-auto">
               {navLinks.map((link) => (
                 <div key={link.to}>
                   <NavLink
@@ -215,20 +215,28 @@ export default function Navbar() {
                     end={link.to === '/'}
                     className={({ isActive }) =>
                       `block px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
-                        isActive ? 'text-primary-600 bg-primary-50 font-bold border-l-4 border-primary-600' : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50'
+                        isActive
+                          ? 'text-primary-600 bg-primary-50 font-bold border-l-4 border-primary-600'
+                          : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50'
                       }`
                     }
                   >
                     {link.label}
                   </NavLink>
-                  {/* Mobile: show only enabled categories */}
+                  {/* Mobile: list all active categories under Products */}
                   {link.hasDropdown && navCategories.length > 0 && (
                     <div className="pl-4 mt-1 flex flex-col gap-0.5">
+                      <Link
+                        to="/products"
+                        className="px-4 py-2 text-xs font-bold text-gray-800 hover:text-primary-600 rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        All Products
+                      </Link>
                       {navCategories.map((cat) => (
                         <Link
                           key={cat.id}
                           to={`/products?category=${cat.slug}`}
-                          className="px-4 py-2 text-xs text-gray-500 hover:text-primary-600 rounded-lg hover:bg-gray-50 transition-colors"
+                          className="px-4 py-2 text-xs text-gray-600 hover:text-primary-600 rounded-lg hover:bg-gray-50 transition-colors"
                         >
                           {cat.name}
                         </Link>

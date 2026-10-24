@@ -14,7 +14,8 @@ function rmFile(url: string) {
 
 export async function getProducts(req: Request, res: Response): Promise<void> {
   try {
-    const { page = '1', limit = '12', search = '', category = '', status = '', featured = '', sort = 'createdAt', order = 'desc' } = req.query as Record<string, string>;
+    const { page = '1', limit = '12', search = '', category = '', status = '', featured = '', sort = 'createdAt', order = 'desc', includeImages = 'true', onlyHover = 'false' } = req.query as Record<string, string>;
+    const shouldIncludeImages = includeImages !== 'false';
     const pageNum = Math.max(1, parseInt(page));
     const limitNum = Math.min(200, Math.max(1, parseInt(limit)));
     const skip = (pageNum - 1) * limitNum;
@@ -26,6 +27,7 @@ export async function getProducts(req: Request, res: Response): Promise<void> {
     if (status) where.status = status.toUpperCase();
     else if (!req.headers.authorization) where.status = 'ACTIVE';
     if (featured === 'true') where.featured = true;
+    if (onlyHover === 'true') where.showNameOnHover = true;
 
     const validSort = ['name', 'createdAt', 'updatedAt', 'price'];
     const sortField = validSort.includes(sort) ? sort : 'createdAt';
@@ -37,7 +39,7 @@ export async function getProducts(req: Request, res: Response): Promise<void> {
         orderBy: { [sortField]: sortOrder },
         include: {
           category: { select: { id: true, name: true, slug: true } },
-          images: { where: { isPrimary: true }, take: 1, select: { id: true, url: true, altText: true } },
+          ...(shouldIncludeImages ? { images: { where: { isPrimary: true }, take: 1, select: { id: true, url: true, altText: true } } } : {}),
         },
       }),
       prisma.product.count({ where }),
