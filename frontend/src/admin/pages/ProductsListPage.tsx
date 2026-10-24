@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Pencil, Trash2, Search, Image, X, Eye, EyeOff } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, Image, X } from 'lucide-react';
 import { productsApi } from '@/services/api';
 import ConfirmModal from '@/admin/components/ConfirmModal';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -30,32 +30,6 @@ export default function ProductsListPage() {
     onError: () => toast.error('Failed to delete product'),
   });
 
-  // Toggle showNameOnHover with optimistic update
-  // When ON → that product's category appears in the navbar dropdown
-  const hoverToggleMutation = useMutation({
-    mutationFn: ({ id, value }: { id: string; value: boolean }) =>
-      productsApi.update(id, { showNameOnHover: value }),
-    onMutate: async ({ id, value }) => {
-      await qc.cancelQueries({ queryKey: ['admin-products', search] });
-      const prev = qc.getQueryData<PaginatedResponse<Product>>(['admin-products', search]);
-      qc.setQueryData<PaginatedResponse<Product>>(['admin-products', search], (old) => {
-        if (!old) return old;
-        return { ...old, data: old.data.map((p) => (p.id === id ? { ...p, showNameOnHover: value } : p)) };
-      });
-      return { prev };
-    },
-    onError: (_err, _vars, ctx) => {
-      if (ctx?.prev) qc.setQueryData(['admin-products', search], ctx.prev);
-      toast.error('Failed to update hover setting');
-    },
-    onSuccess: (_data, { value }) => {
-      // Invalidate the navbar products query so the navbar dropdown updates
-      qc.invalidateQueries({ queryKey: ['navbar-products'] });
-      qc.invalidateQueries({ queryKey: ['products'] });
-      toast.success(value ? 'Category will now show in navbar dropdown ✓' : 'Category removed from navbar dropdown');
-    },
-  });
-
   const products = data?.data || [];
 
   return (
@@ -75,17 +49,22 @@ export default function ProductsListPage() {
       <div className="bg-white rounded-2xl border border-gray-200 p-5">
         <div className="relative max-w-sm">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search products..." className="form-input pl-10" />
-          {search && <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"><X size={14} /></button>}
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search products..."
+            className="form-input pl-10"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+            >
+              <X size={14} />
+            </button>
+          )}
         </div>
-      </div>
-
-      {/* Info banner */}
-      <div className="flex items-center gap-2 text-xs text-gray-500 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2.5 w-fit">
-        <Eye size={14} className="text-blue-500" />
-        <span>
-          <strong className="text-blue-700">Name on Hover</strong> — When ON, this product's <strong>category</strong> appears in the <strong>Products navbar dropdown</strong> on the public website.
-        </span>
       </div>
 
       {/* Table */}
@@ -94,25 +73,32 @@ export default function ProductsListPage() {
           <LoadingSpinner />
         ) : products.length === 0 ? (
           <div className="text-center py-16">
-            <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-4"><Package size={28} className="text-gray-400" /></div>
+            <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-4">
+              <Package size={28} className="text-gray-400" />
+            </div>
             <p className="text-gray-500 mb-3">No products found</p>
-            <Link to="/owner/products/new" className="btn-primary btn-sm rounded-lg">Add First Product</Link>
+            <Link to="/owner/products/new" className="btn-primary btn-sm rounded-lg">
+              Add First Product
+            </Link>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  {['Image', 'Product', 'Category', 'SKU', 'Status', 'Featured', 'Name on Hover', 'Actions'].map((h) => (
-                    <th key={h} className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                  {['Image', 'Product', 'Category', 'SKU', 'Status', 'Featured', 'Actions'].map((h) => (
+                    <th
+                      key={h}
+                      className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap"
+                    >
+                      {h}
+                    </th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {products.map((p) => {
                   const primaryImg = p.images?.find((i) => i.isPrimary) || p.images?.[0];
-                  const isHoverOn = p.showNameOnHover;
-                  const isToggling = hoverToggleMutation.isPending && hoverToggleMutation.variables?.id === p.id;
 
                   return (
                     <tr key={p.id} className="hover:bg-gray-50 transition-colors">
@@ -126,17 +112,21 @@ export default function ProductsListPage() {
                             className="w-12 h-12 rounded-xl object-contain bg-white border border-gray-200 p-0.5"
                           />
                         ) : (
-                          <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center"><Image size={18} className="text-gray-300" /></div>
+                          <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center">
+                            <Image size={18} className="text-gray-300" />
+                          </div>
                         )}
                       </td>
 
                       {/* Product name */}
                       <td className="px-5 py-4">
                         <div className="font-semibold text-dark-900 text-sm max-w-xs truncate">{p.name}</div>
-                        {p.shortDesc && <div className="text-xs text-gray-400 truncate max-w-xs mt-0.5">{p.shortDesc}</div>}
+                        {p.shortDesc && (
+                          <div className="text-xs text-gray-400 truncate max-w-xs mt-0.5">{p.shortDesc}</div>
+                        )}
                       </td>
 
-                      {/* Category — always visible */}
+                      {/* Category */}
                       <td className="px-5 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {p.category?.name || <span className="text-gray-300">—</span>}
                       </td>
@@ -146,39 +136,44 @@ export default function ProductsListPage() {
 
                       {/* Status */}
                       <td className="px-5 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${p.status === 'ACTIVE' ? 'bg-green-50 text-green-700' : p.status === 'DRAFT' ? 'bg-yellow-50 text-yellow-700' : 'bg-red-50 text-red-700'}`}>
+                        <span
+                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
+                            p.status === 'ACTIVE'
+                              ? 'bg-green-50 text-green-700'
+                              : p.status === 'DRAFT'
+                              ? 'bg-yellow-50 text-yellow-700'
+                              : 'bg-red-50 text-red-700'
+                          }`}
+                        >
                           {p.status}
                         </span>
                       </td>
 
                       {/* Featured */}
-                      <td className="px-5 py-4 text-sm">{p.featured ? <span className="text-accent-DEFAULT font-bold">★</span> : <span className="text-gray-300">—</span>}</td>
-
-                      {/* Name on Hover toggle */}
-                      <td className="px-5 py-4">
-                        <button
-                          id={`hover-toggle-${p.id}`}
-                          title={isHoverOn ? 'Category shown in navbar — click to hide' : 'Category hidden from navbar — click to show'}
-                          disabled={isToggling}
-                          onClick={() => hoverToggleMutation.mutate({ id: p.id, value: !isHoverOn })}
-                          className={`
-                            flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200
-                            ${isHoverOn
-                              ? 'bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100'
-                              : 'bg-gray-100 border-gray-200 text-gray-400 hover:bg-gray-200 hover:text-gray-600'}
-                            ${isToggling ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
-                          `}
-                        >
-                          {isHoverOn ? <Eye size={13} /> : <EyeOff size={13} />}
-                          {isHoverOn ? 'ON' : 'OFF'}
-                        </button>
+                      <td className="px-5 py-4 text-sm">
+                        {p.featured ? (
+                          <span className="text-accent-DEFAULT font-bold">★</span>
+                        ) : (
+                          <span className="text-gray-300">—</span>
+                        )}
                       </td>
 
                       {/* Actions */}
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-2">
-                          <Link to={`/owner/products/${p.id}/edit`} className="p-1.5 rounded-lg hover:bg-primary-50 text-primary-DEFAULT transition-colors"><Pencil size={15} /></Link>
-                          <button onClick={() => setDeleteId(p.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-red-500 transition-colors"><Trash2 size={15} /></button>
+                          <Link
+                            to={`/owner/products/${p.id}/edit`}
+                            className="p-1.5 rounded-lg hover:bg-primary-50 text-primary-DEFAULT transition-colors"
+                          >
+                            <Pencil size={15} />
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => setDeleteId(p.id)}
+                            className="p-1.5 rounded-lg hover:bg-red-50 text-red-500 transition-colors"
+                          >
+                            <Trash2 size={15} />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -204,5 +199,23 @@ export default function ProductsListPage() {
 }
 
 function Package({ size, className }: { size: number; className?: string }) {
-  return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/></svg>;
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M16.5 9.4 7.55 4.24" />
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+      <polyline points="3.29 7 12 12 20.71 7" />
+      <line x1="12" x2="12" y1="22" y2="12" />
+    </svg>
+  );
 }
