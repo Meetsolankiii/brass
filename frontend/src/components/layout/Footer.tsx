@@ -45,9 +45,9 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <Link to="/" className="inline-flex items-center mb-5 group">
               <img
-                src={settings?.site_logo || "/images/hero/cbi-logo.png"}
+                src="/images/hero/cbi-logo-transparent.png"
                 alt={siteName}
-                className="h-12 md:h-14 w-auto max-w-[260px] md:max-w-[290px] object-contain transition-transform group-hover:scale-[1.02] drop-shadow-[0_2px_8px_rgba(255,255,255,0.08)]"
+                className="h-12 md:h-14 w-auto max-w-[260px] md:max-w-[290px] object-contain transition-transform group-hover:scale-[1.02] drop-shadow-[0_0_1px_rgba(255,255,255,0.85)] drop-shadow-[0_2px_8px_rgba(255,255,255,0.12)]"
               />
             </Link>
             <p className="text-sm leading-relaxed mb-6">{settings?.site_description || 'Leading supplier of industrial machinery, precision parts, and safety equipment.'}</p>
