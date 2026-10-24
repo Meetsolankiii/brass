@@ -1,3 +1,4 @@
+import { compressAllProductImages } from '@/utils/clientImageCompressor';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -20,24 +21,45 @@ export default function ProductsListPage() {
   });
 
   const [isCompressing, setIsCompressing] = useState(false);
+  const [compressProgress, setCompressProgress] = useState<{ current: number; total: number; name: string } | null>(null);
 
-  const compressMutation = useMutation({
-    mutationFn: () => productsApi.compressAllImages(),
-    onSuccess: (res: any) => {
+  const handleCompress = async () => {
+    setIsCompressing(true);
+    setCompressProgress(null);
+
+    // 1. Try backend server-side endpoint first
+    try {
+      const res: any = await productsApi.compressAllImages();
       qc.invalidateQueries({ queryKey: ['admin-products'] });
       qc.invalidateQueries({ queryKey: ['products'] });
       toast.success(res?.data?.message || 'All images compressed to WebP successfully!');
       setIsCompressing(false);
-    },
-    onError: () => {
-      toast.error('Failed to compress images');
-      setIsCompressing(false);
-    },
-  });
+      return;
+    } catch {
+      console.log('Backend image compressor endpoint unavailable, using native browser Canvas optimizer...');
+    }
 
-  const handleCompress = () => {
-    setIsCompressing(true);
-    compressMutation.mutate();
+    // 2. Fallback: Run browser-native Canvas WebP compressor
+    try {
+      const result = await compressAllProductImages(products, (current, total, name) => {
+        setCompressProgress({ current, total, name });
+      });
+
+      qc.invalidateQueries({ queryKey: ['admin-products'] });
+      qc.invalidateQueries({ queryKey: ['products'] });
+
+      if (result.totalOptimized > 0) {
+        toast.success(`Optimized ${result.totalOptimized} images to WebP! Saved ~${result.totalSavedMB} MB.`);
+      } else {
+        toast.info('All product images are already compressed & optimized!');
+      }
+    } catch (err: any) {
+      console.error('Client compression error:', err);
+      toast.error(err?.message || 'Failed to compress images');
+    } finally {
+      setIsCompressing(false);
+      setCompressProgress(null);
+    }
   };
 
   const deleteMutation = useMutation({
@@ -77,6 +99,26 @@ export default function ProductsListPage() {
           </Link>
         </div>
       </div>
+
+      {/* Optimization Progress Bar */}
+      {compressProgress && (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 shadow-sm">
+          <div className="flex items-center justify-between text-xs font-bold text-amber-900 mb-1.5">
+            <span className="flex items-center gap-2">
+              <Sparkles size={14} className="animate-spin text-amber-600" />
+              Optimizing Image {compressProgress.current} of {compressProgress.total}...
+            </span>
+            <span>{Math.round((compressProgress.current / compressProgress.total) * 100)}%</span>
+          </div>
+          <p className="text-xs text-amber-700 truncate mb-2">Product: {compressProgress.name}</p>
+          <div className="w-full bg-amber-200 h-2.5 rounded-full overflow-hidden">
+            <div
+              className="bg-amber-600 h-full transition-all duration-300"
+              style={{ width: `${(compressProgress.current / compressProgress.total) * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Search */}
       <div className="bg-white rounded-2xl border border-gray-200 p-5">
