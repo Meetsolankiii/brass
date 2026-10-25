@@ -79,7 +79,7 @@ app.use('/api/uploads', express.static(path.join(process.cwd(), 'uploads'), {
 app.use('/api', apiRouter);
 
 // ── Health check ──────────────────────────────────────────────
-app.get('/api/health', (_, res) => {
+app.get(['/', '/health', '/api/health'], (_, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
