@@ -1,10 +1,8 @@
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Package, FolderOpen, Star, Zap, Plus, ArrowRight, Clock, Users, RotateCcw, X, Check } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { Package, FolderOpen, Star, Zap, Plus, ArrowRight, Clock, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { productsApi, categoriesApi, testimonialsApi, settingsApi } from '@/services/api';
 import { useAuthStore } from '@/store/auth.store';
-import { toast } from '@/components/ui/Toast';
 import type { PaginatedResponse, Product, Category, Testimonial } from '@/types';
 
 function StatCard({
@@ -13,14 +11,12 @@ function StatCard({
   value,
   color,
   link,
-  action,
 }: {
   icon: React.ElementType;
   label: string;
   value: string | number;
   color: string;
   link?: string;
-  action?: React.ReactNode;
 }) {
   const content = (
     <div className={`p-5 rounded-2xl border-2 ${color} bg-white group cursor-default relative overflow-hidden transition-all duration-200 hover:shadow-sm`}>
@@ -28,7 +24,6 @@ function StatCard({
         <div>
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{label}</p>
           <p className="font-heading font-bold text-2xl sm:text-3xl text-dark-900">{value}</p>
-          {action && <div className="mt-2.5">{action}</div>}
         </div>
         <div className="w-11 h-11 rounded-xl bg-current/10 flex items-center justify-center shrink-0">
           <Icon size={22} className="opacity-80" />
@@ -41,12 +36,8 @@ function StatCard({
 
 export default function DashboardPage() {
   const user = useAuthStore((s) => s.user);
-  const qc = useQueryClient();
 
-  const [isResetOpen, setIsResetOpen] = useState(false);
-  const [newCountVal, setNewCountVal] = useState('0');
-
-  // Ultra-fast optimized queries: exclude 11MB image payloads for instant dashboard load
+  // Fast optimized queries: exclude 11MB image payloads for instant dashboard load
   const { data: productsData } = useQuery({
     queryKey: ['dashboard-products'],
     queryFn: () => productsApi.getAll({ limit: '5', includeImages: 'false' }).then((r) => r.data as PaginatedResponse<Product>),
@@ -72,42 +63,12 @@ export default function DashboardPage() {
     queryFn: () => settingsApi.getVisitStats().then((r) => r.data as { success: boolean; data: { count: number } }),
   });
 
-  const resetMutation = useMutation({
-    mutationFn: (count: number) => settingsApi.resetVisitCount(count),
-    onSuccess: (_, variables) => {
-      qc.invalidateQueries({ queryKey: ['visitor-stats'] });
-      toast.success(`Visitor counter set to ${variables}`);
-      setIsResetOpen(false);
-    },
-    onError: () => toast.error('Failed to update visitor counter'),
-  });
-
-  const handleResetSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const parsed = parseInt(newCountVal, 10);
-    resetMutation.mutate(isNaN(parsed) || parsed < 0 ? 0 : parsed);
-  };
-
   const stats = [
     {
       icon: Users,
       label: 'Website Visitors',
       value: visitorData?.data?.count !== undefined ? Number(visitorData.data.count).toLocaleString() : '0',
       color: 'border-emerald-200 text-emerald-600',
-      action: (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setNewCountVal(String(visitorData?.data?.count ?? 0));
-            setIsResetOpen(true);
-          }}
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
-          title="Reset or adjust the visitor count"
-        >
-          <RotateCcw size={11} /> Reset
-        </button>
-      ),
     },
     { icon: Package, label: 'Total Products', value: productsData?.pagination?.total ?? '—', color: 'border-primary-200 text-primary-DEFAULT', link: '/owner/products' },
     { icon: Zap, label: 'Featured Products', value: featuredData?.pagination?.total ?? '—', color: 'border-amber-200 text-amber-600', link: '/owner/products' },
@@ -134,64 +95,6 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {stats.map((s) => <StatCard key={s.label} {...s} />)}
       </div>
-
-      {/* Reset Modal */}
-      {isResetOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/50 backdrop-blur-sm">
-          <div className="relative w-full max-w-sm bg-white rounded-2xl shadow-xl p-6 border border-gray-100 animate-fade-in">
-            <button
-              type="button"
-              onClick={() => setIsResetOpen(false)}
-              className="absolute top-4 right-4 p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-            >
-              <X size={18} />
-            </button>
-
-            <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
-              <Users size={24} />
-            </div>
-
-            <h3 className="font-heading font-bold text-lg text-dark-900 mb-1">Reset Visitor Counter</h3>
-            <p className="text-gray-500 text-xs mb-4">
-              Reset your website visitor count to 0, or enter a custom number.
-            </p>
-
-            <form onSubmit={handleResetSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
-                  Visitor Count Number
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={newCountVal}
-                  onChange={(e) => setNewCountVal(e.target.value)}
-                  className="form-input text-center font-bold text-2xl py-2 w-full"
-                  autoFocus
-                />
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setNewCountVal('0')}
-                  className="px-3 py-2 text-xs font-semibold rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50"
-                >
-                  Set 0
-                </button>
-                <button
-                  type="submit"
-                  disabled={resetMutation.isPending}
-                  className="flex-1 btn-primary btn-sm rounded-lg flex items-center justify-center gap-1.5"
-                >
-                  <Check size={14} />
-                  {resetMutation.isPending ? 'Saving...' : 'Save Count'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Recent Products */}
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
