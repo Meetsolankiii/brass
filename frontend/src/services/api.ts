@@ -140,6 +140,9 @@ export const settingsApi = {
   getAll: () => api.get('/settings'),
   getByGroup: (group: string) => api.get(`/settings/${group}`),
   update: (data: Record<string, string>) => api.put('/settings', data),
+  recordVisit: () => api.post('/settings/visit'),
+  getVisitStats: () => api.get('/settings/stats/visits'),
+  resetVisitCount: (count = 0) => api.post('/settings/reset-visits', { count }),
   uploadLogo: (file: File) => {
     const fd = new FormData();
     fd.append('logo', file);

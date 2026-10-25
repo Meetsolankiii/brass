@@ -76,3 +76,46 @@ export async function uploadLogo(req: AuthRequest, res: Response): Promise<void>
     errorResponse(res, 'Failed to upload logo', 500);
   }
 }
+
+
+export async function recordVisit(_req: Request, res: Response): Promise<void> {
+  try {
+    const setting = await prisma.siteSetting.findUnique({ where: { key: 'visitor_count' } });
+    const currentCount = setting ? parseInt(setting.value, 10) || 0 : 0;
+    const newCount = currentCount + 1;
+    await prisma.siteSetting.upsert({
+      where: { key: 'visitor_count' },
+      update: { value: String(newCount) },
+      create: { key: 'visitor_count', value: String(newCount), group: 'analytics', label: 'Total Website Visitors' },
+    });
+    successResponse(res, { count: newCount });
+  } catch (error) {
+    console.error('Record visit error:', error);
+    errorResponse(res, 'Failed to record visit', 500);
+  }
+}
+
+export async function getVisitStats(_req: Request, res: Response): Promise<void> {
+  try {
+    const setting = await prisma.siteSetting.findUnique({ where: { key: 'visitor_count' } });
+    const count = setting ? parseInt(setting.value, 10) || 0 : 0;
+    successResponse(res, { count });
+  } catch (error) {
+    errorResponse(res, 'Failed to get visit stats', 500);
+  }
+}
+
+export async function resetVisitCount(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const newCount = typeof req.body?.count === 'number' ? req.body.count : 0;
+    await prisma.siteSetting.upsert({
+      where: { key: 'visitor_count' },
+      update: { value: String(newCount) },
+      create: { key: 'visitor_count', value: String(newCount), group: 'analytics', label: 'Total Website Visitors' },
+    });
+    successResponse(res, { count: newCount }, 'Visitor counter reset successfully');
+  } catch (error) {
+    console.error('Reset visit count error:', error);
+    errorResponse(res, 'Failed to reset visit count', 500);
+  }
+}

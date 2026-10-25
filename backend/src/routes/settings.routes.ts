@@ -1,10 +1,24 @@
 import { Router } from 'express';
-import { getSettings, updateSettings, getSettingsByGroup, uploadLogo } from '../controllers/settings.controller';
+import {
+  getSettings,
+  updateSettings,
+  getSettingsByGroup,
+  uploadLogo,
+  recordVisit,
+  getVisitStats,
+  resetVisitCount,
+} from '../controllers/settings.controller';
 import { authenticate, requireAdmin } from '../middleware/auth.middleware';
 import { upload, setUploadSubfolder } from '../middleware/upload.middleware';
 
 const router = Router();
 
+// Visitor tracking & stats
+router.post('/visit', recordVisit);
+router.get('/stats/visits', getVisitStats);
+router.post('/reset-visits', authenticate, requireAdmin, resetVisitCount);
+
+// Settings
 router.get('/', getSettings);
 router.get('/:group', getSettingsByGroup);
 router.put('/', authenticate, requireAdmin, updateSettings);

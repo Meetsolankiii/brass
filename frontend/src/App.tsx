@@ -6,7 +6,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ProtectedRoute from '@/admin/components/ProtectedRoute';
 import { useAuthStore } from '@/store/auth.store';
 import SelfPing from '@/utils/selfPing';
-import { authApi } from '@/services/api';
+import { authApi, settingsApi } from '@/services/api';
 import WhatsAppButton from '@/components/shared/WhatsAppButton';
 
 // Public pages
@@ -31,6 +31,13 @@ const SiteContentPage = lazy(() => import('@/admin/pages/SiteContentPage'));
 const AccountSettingsPage = lazy(() => import('@/admin/pages/AccountSettingsPage'));
 
 function PublicLayout({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    if (!sessionStorage.getItem('cb_visited')) {
+      sessionStorage.setItem('cb_visited', '1');
+      settingsApi.recordVisit().catch(() => {});
+    }
+  }, []);
+
   return (
     <>
       <Navbar />
