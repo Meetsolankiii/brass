@@ -3,7 +3,6 @@ import fs from 'fs';
 import path from 'path';
 import app from './app';
 import { prisma } from './utils/prisma';
-import { compressLegacyImages } from './utils/compressLegacyImages';
 
 const PORT = parseInt(process.env.PORT || '5000', 10);
 
@@ -22,9 +21,6 @@ async function main(): Promise<void> {
   try {
     await prisma.$connect();
     console.log('✅ Database connected');
-
-    // Run one-time image compression migration in background
-    compressLegacyImages().catch((err) => console.error('Image compression background error:', err));
   } catch (error) {
     console.error('❌ Database connection failed:', error);
     console.error('\nMake sure your database is accessible and DATABASE_URL in .env is correct.');

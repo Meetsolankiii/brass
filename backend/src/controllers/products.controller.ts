@@ -1,4 +1,4 @@
-import { compressLegacyImages } from '../utils/compressLegacyImages';
+
 import { Request, Response } from 'express';
 import { prisma } from '../utils/prisma';
 import { successResponse, errorResponse, paginatedResponse } from '../utils/response';
@@ -248,11 +248,5 @@ export async function updateProductImage(req: AuthRequest, res: Response): Promi
 }
 
 export async function triggerCompressAllImages(req: AuthRequest, res: Response): Promise<void> {
-  try {
-    const result = await compressLegacyImages();
-    successResponse(res, result, `Optimization finished! Compressed ${result.compressed} images, saved ${(result.savedBytes / (1024 * 1024)).toFixed(2)} MB.`);
-  } catch (error) {
-    console.error('Trigger compress all images error:', error);
-    errorResponse(res, 'Failed to compress images', 500);
-  }
+  successResponse(res, { compressed: 0, savedBytes: 0 }, 'Client browser canvas optimizer is active.');
 }
