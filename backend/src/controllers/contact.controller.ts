@@ -57,7 +57,7 @@ export async function submitContactForm(req: Request, res: Response): Promise<vo
     }
 
     // Forward to Formspree asynchronously in the background
-    (globalThis as any).fetch('https://formspree.io/f/mjykbyza', {
+    (globalThis as any).fetch('https://formspree.io/f/xrpppyrg', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
