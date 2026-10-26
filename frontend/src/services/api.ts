@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useAuthStore } from '@/store/auth.store';
 
 const BASE_URL = import.meta.env.PROD 
-  ? 'https://brass-q9gb.onrender.com/api' 
+  ? 'https://brass-project.onrender.com/api' 
   : (import.meta.env.VITE_API_URL || 'http://localhost:5000/api');
 
 export const api = axios.create({
@@ -23,7 +23,7 @@ function prefixUploadUrls(obj: any): any {
   if (!obj) return obj;
   if (typeof obj === 'string') {
     if (obj.startsWith('/api/uploads/')) {
-      return `https://brass-q9gb.onrender.com${obj}`;
+      return `https://brass-project.onrender.com${obj}`;
     }
     return obj;
   }
