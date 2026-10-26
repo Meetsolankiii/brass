@@ -60,3 +60,22 @@
   .form-label { @apply block text-sm font-semibold text-gray-700 mb-1.5; }
   .form-error { @apply text-red-600 text-xs mt-1; }
 }
+
+
+/* Auto-Scrolling Marquee */
+@keyframes marqueeScroll {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee-slow {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 45s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-slow:hover,
+.marquee-paused {
+  animation-play-state: paused !important;
+}
