@@ -16,6 +16,8 @@ const ProductDetailPage = lazy(() => import('@/pages/ProductDetailPage'));
 const AboutPage = lazy(() => import('@/pages/AboutPage'));
 const ContactPage = lazy(() => import('@/pages/ContactPage'));
 const InquiryPage = lazy(() => import('@/pages/InquiryPage'));
+const PrivacyPolicyPage = lazy(() => import('@/pages/PrivacyPolicyPage'));
+const TermsPage = lazy(() => import('@/pages/TermsPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 
 // Admin pages
@@ -85,6 +87,8 @@ export default function App() {
           <Route path="/products/:slug" element={<PublicLayout><ProductDetailPage /></PublicLayout>} />
           <Route path="/inquiry" element={<PublicLayout><InquiryPage /></PublicLayout>} />
           <Route path="/contact" element={<PublicLayout><ContactPage /></PublicLayout>} />
+          <Route path="/privacy-policy" element={<PublicLayout><PrivacyPolicyPage /></PublicLayout>} />
+          <Route path="/terms-and-conditions" element={<PublicLayout><TermsPage /></PublicLayout>} />
 
           {/* Owner routes */}
           <Route path="/owner/login" element={<AdminLoginPage />} />
