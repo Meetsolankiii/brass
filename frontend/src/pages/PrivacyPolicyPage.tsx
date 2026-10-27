@@ -47,7 +47,7 @@ export default function PrivacyPolicyPage() {
               1. Overview & Commitment
             </h2>
             <p>
-              <strong>Chetan Brass Industries</strong> (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), operating from Jamnagar, Gujarat, India (GSTIN: <strong>24ATFPN6016R1Z9</strong>), is a premier manufacturer and exporter of precision turned brass parts, components, and custom hardware. 
+              <strong>Chetan Brass Industries</strong> (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), operating from Khimaliya Village, Jamnagar, Gujarat – 361120, India (GSTIN: <strong>24ATFPN6016R1Z9</strong>), is a premier manufacturer and exporter of precision turned brass parts, components, and custom hardware. 
             </p>
             <p>
               We prioritize the complete confidentiality and protection of our industrial clients, procurement managers, distributors, and website visitors. This Privacy Policy details how we collect, store, and utilize technical and commercial information submitted across our portal.
@@ -125,11 +125,11 @@ export default function PrivacyPolicyPage() {
               </div>
               <div className="flex items-center gap-3 text-gray-300">
                 <MapPin size={16} className="text-accent-DEFAULT shrink-0" />
-                <span>Jamnagar, Gujarat, India</span>
+                <span>Khimaliya Village, Jamnagar, Gujarat – 361120, India</span>
               </div>
               <div className="flex items-center gap-3 text-gray-300">
                 <Phone size={16} className="text-accent-DEFAULT shrink-0" />
-                <a href="tel:+919924464511" className="hover:text-white transition-colors">+91 99244 64511</a>
+                <a href="tel:+919327174035" className="hover:text-white transition-colors">+91 93271 74035</a>
               </div>
               <div className="flex items-center gap-3 text-gray-300">
                 <Mail size={16} className="text-accent-DEFAULT shrink-0" />

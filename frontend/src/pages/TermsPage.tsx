@@ -46,7 +46,7 @@ export default function TermsPage() {
               1. General Commercial Scope
             </h2>
             <p>
-              These Terms and Conditions constitute a legally binding agreement between <strong>Chetan Brass Industries</strong> (Jamnagar, Gujarat, India, GSTIN: <strong>24ATFPN6016R1Z9</strong>) and the purchasing entity or client.
+              These Terms and Conditions constitute a legally binding agreement between <strong>Chetan Brass Industries</strong> (Khimaliya Village, Jamnagar, Gujarat – 361120, India, GSTIN: <strong>24ATFPN6016R1Z9</strong>) and the purchasing entity or client.
             </p>
             <p>
               By issuing a Purchase Order (PO), confirming a quotation, or accepting delivery of brass components, turned parts, fasteners, or assemblies, the buyer agrees to be governed by these terms unless expressly superseded by a signed bilateral contract.
@@ -92,7 +92,7 @@ export default function TermsPage() {
               We provide comprehensive dispatch options across domestic India and international export destinations:
             </p>
             <ul className="space-y-2 list-disc pl-5">
-              <li><strong>Domestic Orders:</strong> Ex-Factory (Jamnagar, Gujarat) or Door Delivery via approved third-party road freight carriers. Goods transit at buyer&apos;s risk unless transit insurance is expressly contracted.</li>
+              <li><strong>Domestic Orders:</strong> Ex-Factory (Khimaliya, Jamnagar, Gujarat – 361120) or Door Delivery via approved third-party road freight carriers. Goods transit at buyer&apos;s risk unless transit insurance is expressly contracted.</li>
               <li><strong>Export Consignments:</strong> Shipped under recognized Incoterms (FOB Mundra / Kandla Port, CIF, CFR, or Air Freight). Chetan Brass Industries furnishes standard commercial export invoices, packing lists, and Certificates of Origin.</li>
               <li><strong>Lead Times:</strong> Delivery schedules indicate estimated dispatch dates from our factory and are contingent upon raw material availability, power supply, and standard industrial operating conditions.</li>
             </ul>
@@ -153,11 +153,11 @@ export default function TermsPage() {
               </div>
               <div className="flex items-center gap-3 text-gray-300">
                 <MapPin size={16} className="text-accent-DEFAULT shrink-0" />
-                <span>Jamnagar, Gujarat, India</span>
+                <span>Khimaliya Village, Jamnagar, Gujarat – 361120, India</span>
               </div>
               <div className="flex items-center gap-3 text-gray-300">
                 <Phone size={16} className="text-accent-DEFAULT shrink-0" />
-                <a href="tel:+919924464511" className="hover:text-white transition-colors">+91 99244 64511</a>
+                <a href="tel:+919327174035" className="hover:text-white transition-colors">+91 93271 74035</a>
               </div>
               <div className="flex items-center gap-3 text-gray-300">
                 <Mail size={16} className="text-accent-DEFAULT shrink-0" />
