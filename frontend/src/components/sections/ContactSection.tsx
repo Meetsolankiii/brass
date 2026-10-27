@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQuery } from '@tanstack/react-query';
-import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, ShieldCheck } from 'lucide-react';
 import { settingsApi, contactApi } from '@/services/api';
 import AnimatedSection from '@/components/shared/AnimatedSection';
 import { toast } from '@/components/ui/Toast';
@@ -41,6 +41,7 @@ export default function ContactSection() {
     { icon: MapPin, label: 'Address', value: settings?.contact_address, href: null },
     { icon: Phone, label: 'Phone', value: settings?.contact_phone, href: `tel:${settings?.contact_phone}` },
     { icon: Mail, label: 'Email', value: settings?.contact_email, href: `mailto:${settings?.contact_email}` },
+    { icon: ShieldCheck, label: 'GSTIN', value: settings?.gst_number || '24ATFPN6016R1Z9', href: null },
     { icon: Clock, label: 'Business Hours', value: settings?.contact_hours, href: null },
   ].filter((c) => c.value);
 

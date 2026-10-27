@@ -146,6 +146,14 @@ export default function Footer() {
                   <a href={`mailto:${settings.contact_email}`} className="text-sm hover:text-white transition-colors">{settings.contact_email}</a>
                 </li>
               )}
+              <li className="flex items-center gap-3 pt-1">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-accent-DEFAULT/20 text-accent-DEFAULT border border-accent-DEFAULT/30">
+                  GSTIN
+                </span>
+                <span className="text-sm font-mono tracking-wider text-gray-300 font-medium">
+                  {settings?.gst_number || '24ATFPN6016R1Z9'}
+                </span>
+              </li>
             </ul>
           </div>
         </div>
@@ -154,15 +162,19 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-dark-700">
         <div className="container-xl py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-          <span>
-            <span
-              onClick={() => navigate('/owner/login')}
-              className="cursor-default select-none"
-            >
-              © {new Date().getFullYear()}
-            </span>{' '}
-            {siteName}. All rights reserved.
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span>
+              <span
+                onClick={() => navigate('/owner/login')}
+                className="cursor-default select-none"
+              >
+                © {new Date().getFullYear()}
+              </span>{' '}
+              {siteName}. All rights reserved.
+            </span>
+            <span className="text-dark-500 hidden sm:inline">•</span>
+            <span className="text-gray-400 font-mono">GSTIN: {settings?.gst_number || '24ATFPN6016R1Z9'}</span>
+          </div>
           <div className="flex gap-4">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-white transition-colors">Terms & Conditions</a>
