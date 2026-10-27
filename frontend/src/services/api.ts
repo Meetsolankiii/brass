@@ -57,7 +57,13 @@ api.interceptors.response.use(
   },
   async (error) => {
     const orig = error.config;
-    if (error.response?.status === 401 && !orig._retry) {
+    const isAuthEndpoint = orig?.url?.includes('/auth/login') ||
+                           orig?.url?.includes('/auth/verify-otp') ||
+                           orig?.url?.includes('/auth/refresh') ||
+                           orig?.url?.includes('/auth/forgot') ||
+                           orig?.url?.includes('/auth/reset');
+
+    if (error.response?.status === 401 && !orig._retry && !isAuthEndpoint) {
       if (isRefreshing) return new Promise((resolve, reject) => queue.push({ resolve, reject })).then((t) => { orig.headers.Authorization = `Bearer ${t}`; return api(orig); });
       orig._retry = true; isRefreshing = true;
       try {
