@@ -59,19 +59,19 @@ export default function HeroSection() {
             className="absolute inset-0 flex flex-col justify-center pt-24 md:pt-28 pb-10"
           >
             {/* Composition background for slide 1 */}
-            <div className="absolute inset-0 z-0 bg-dark-950">
-            <div 
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-90 transition-all duration-700"
-              style={{ backgroundImage: `url('/images/hero/hero_bg_1.jpg')` }}
-            />
-            <div className="absolute inset-0 hero-pattern opacity-10" />
-            <div 
-              className="absolute inset-0"
-              style={{
-                background: 'linear-gradient(to bottom, rgba(10, 12, 20, 0.65) 0%, rgba(10, 12, 20, 0.35) 50%, rgba(10, 12, 20, 0.85) 100%)'
-              }}
-            />
-          </div>
+            <div className="absolute inset-0 z-0 bg-white">
+              <div 
+                className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-80"
+                style={{ backgroundImage: `url('/images/hero/hero_bg_1.jpg')` }}
+              />
+              <div className="absolute inset-0 hero-pattern opacity-10" />
+              <div 
+                className="absolute inset-0"
+                style={{
+                  background: 'linear-gradient(to bottom, rgba(10, 10, 10, 0.90) 0%, rgba(10, 10, 10, 0.65) 50%, rgba(10, 10, 10, 0.95) 100%)'
+                }}
+              />
+            </div>
 
             <div className="container-xl relative z-20 py-4 text-center mx-auto">
               <div className="max-w-4xl mx-auto">
@@ -117,19 +117,19 @@ export default function HeroSection() {
             className="absolute inset-0 flex flex-col justify-center pt-24 md:pt-28 pb-10"
           >
             {/* Composition background for slide 2 */}
-            <div className="absolute inset-0 z-0 bg-dark-950">
-            <div 
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-85 transition-all duration-700"
-              style={{ backgroundImage: `url('/images/hero/hero_bg_2.jpg')` }}
-            />
-            <div className="absolute inset-0 hero-pattern opacity-10" />
-            <div 
-              className="absolute inset-0"
-              style={{
-                background: 'linear-gradient(to bottom, rgba(10, 12, 20, 0.65) 0%, rgba(10, 12, 20, 0.35) 50%, rgba(10, 12, 20, 0.85) 100%)'
-              }}
-            />
-          </div>
+            <div className="absolute inset-0 z-0 bg-white">
+              <div 
+                className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-75"
+                style={{ backgroundImage: `url('/images/hero/hero_bg_2.jpg')` }}
+              />
+              <div className="absolute inset-0 hero-pattern opacity-10" />
+              <div 
+                className="absolute inset-0"
+                style={{
+                  background: 'linear-gradient(to bottom, rgba(10, 10, 10, 0.90) 0%, rgba(10, 10, 10, 0.65) 50%, rgba(10, 10, 10, 0.95) 100%)'
+                }}
+              />
+            </div>
 
             <div className="container-xl relative z-20 py-4 text-center mx-auto">
               <div className="max-w-4xl mx-auto">
