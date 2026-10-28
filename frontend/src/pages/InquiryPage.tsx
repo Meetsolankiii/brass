@@ -53,7 +53,7 @@ export default function InquiryPage() {
     }
   };
 
-  const whatsappNum = settings?.whatsapp_number || '919924464511';
+  const whatsappNum = settings?.whatsapp_number || '919327174035';
   const whatsappUrl = `https://wa.me/${whatsappNum}?text=Hello,%20I%20have%20an%20inquiry%20regarding%20precision%20brass%20components.`;
 
   return (
@@ -95,24 +95,24 @@ export default function InquiryPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div>
                         <label className="form-label font-semibold">Full Name *</label>
-                        <input {...register('name')} className="form-input" placeholder="e.g. John Doe" />
+                        <input {...register('name')} className="form-input" placeholder="Enter your full name" />
                         {errors.name && <p className="form-error">{errors.name.message}</p>}
                       </div>
                       <div>
                         <label className="form-label font-semibold">Company Name</label>
-                        <input {...register('company')} className="form-input" placeholder="e.g. Apex Engineering Solutions" />
+                        <input {...register('company')} className="form-input" placeholder="Enter company name (optional)" />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div>
                         <label className="form-label font-semibold">Email Address *</label>
-                        <input {...register('email')} type="email" className="form-input" placeholder="e.g. john@example.com" />
+                        <input {...register('email')} type="email" className="form-input" placeholder="Enter your email address" />
                         {errors.email && <p className="form-error">{errors.email.message}</p>}
                       </div>
                       <div>
                         <label className="form-label font-semibold">Phone / WhatsApp *</label>
-                        <input {...register('phone')} className="form-input" placeholder="e.g. +91 98765 43210" />
+                        <input {...register('phone')} className="form-input" placeholder="Enter phone or WhatsApp number" />
                         {errors.phone && <p className="form-error">{errors.phone.message}</p>}
                       </div>
                     </div>
@@ -176,9 +176,9 @@ export default function InquiryPage() {
                 </p>
 
                 <div className="space-y-4">
-                  {/* Phone */}
+                  {/* Primary Phone */}
                   <a 
-                    href={`tel:${settings?.contact_phone || ''}`}
+                    href={`tel:${settings?.contact_phone || '+91 93271 74035'}`}
                     className="flex items-center gap-4 p-4 rounded-xl bg-dark-900/60 border border-dark-700/50 hover:bg-dark-900 hover:border-primary-DEFAULT transition-all group"
                   >
                     <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 group-hover:scale-105 transition-transform shrink-0">
@@ -186,13 +186,29 @@ export default function InquiryPage() {
                     </div>
                     <div>
                       <div className="text-gray-400 text-xs uppercase tracking-wider">Call Us Directly</div>
-                      <div className="text-white text-sm font-semibold mt-0.5">{settings?.contact_phone || '+91 98765 43210'}</div>
+                      <div className="text-white text-sm font-semibold mt-0.5">{settings?.contact_phone || '+91 93271 74035'}</div>
                     </div>
                   </a>
 
+                  {/* Secondary Phone (if available) */}
+                  {settings?.contact_phone_alt && (
+                    <a 
+                      href={`tel:${settings.contact_phone_alt}`}
+                      className="flex items-center gap-4 p-4 rounded-xl bg-dark-900/60 border border-dark-700/50 hover:bg-dark-900 hover:border-primary-DEFAULT transition-all group"
+                    >
+                      <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 group-hover:scale-105 transition-transform shrink-0">
+                        <Phone size={18} />
+                      </div>
+                      <div>
+                        <div className="text-gray-400 text-xs uppercase tracking-wider">Secondary Contact</div>
+                        <div className="text-white text-sm font-semibold mt-0.5">{settings.contact_phone_alt}</div>
+                      </div>
+                    </a>
+                  )}
+
                   {/* Email */}
                   <a 
-                    href={`mailto:${settings?.contact_email || ''}`}
+                    href={`mailto:${settings?.contact_email || 'bhaveshnakum802@gmail.com'}`}
                     className="flex items-center gap-4 p-4 rounded-xl bg-dark-900/60 border border-dark-700/50 hover:bg-dark-900 hover:border-primary-DEFAULT transition-all group"
                   >
                     <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 group-hover:scale-105 transition-transform shrink-0">
@@ -200,7 +216,7 @@ export default function InquiryPage() {
                     </div>
                     <div>
                       <div className="text-gray-400 text-xs uppercase tracking-wider">Email RFQ</div>
-                      <div className="text-white text-sm font-semibold mt-0.5">{settings?.contact_email || 'info@example.com'}</div>
+                      <div className="text-white text-sm font-semibold mt-0.5">{settings?.contact_email || 'bhaveshnakum802@gmail.com'}</div>
                     </div>
                   </a>
 
@@ -227,7 +243,7 @@ export default function InquiryPage() {
                   <div>
                     <div className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Factory & Office:</div>
                     <p className="text-gray-300 text-sm mt-1 whitespace-pre-line leading-relaxed">
-                      {settings?.contact_address || '123 Industrial Area, Phase II\nNew Delhi, 110020\nIndia'}
+                      {settings?.contact_address || 'Khimaliya Village, Jamnagar, Gujarat – 361120, India'}
                     </p>
                   </div>
                 </div>

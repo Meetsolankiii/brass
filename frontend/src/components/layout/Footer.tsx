@@ -140,6 +140,12 @@ export default function Footer() {
                   <a href={`tel:${settings.contact_phone}`} className="text-sm hover:text-white transition-colors">{settings.contact_phone}</a>
                 </li>
               )}
+              {settings?.contact_phone_alt && (
+                <li className="flex items-center gap-3">
+                  <Phone size={15} className="text-accent-DEFAULT shrink-0" />
+                  <a href={`tel:${settings.contact_phone_alt}`} className="text-sm hover:text-white transition-colors">{settings.contact_phone_alt}</a>
+                </li>
+              )}
               {settings?.contact_email && (
                 <li className="flex items-center gap-3">
                   <Mail size={15} className="text-accent-DEFAULT shrink-0" />

@@ -44,6 +44,7 @@ app.use(
 );
 
 // ── Rate limiting ────────────────────────────────────────────
+// 1. General API rate limit (defense against scraping / high-frequency traffic)
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 500,
@@ -53,15 +54,40 @@ const apiLimiter = rateLimit({
 });
 app.use('/api', apiLimiter);
 
-// Stricter limit for auth routes
+// 2. Strict limit for authentication & password resets (defense against brute-force attacks)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { success: false, message: 'Too many login attempts, please try again later.' },
+  message: { success: false, message: 'Too many authentication attempts. Please try again after 15 minutes.' },
 });
 app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/verify-otp', authLimiter);
+app.use('/api/auth/forgot-password', authLimiter);
+app.use('/api/auth/verify-reset-otp', authLimiter);
+app.use('/api/auth/reset-password', authLimiter);
+
+// 3. Spam protection for public inquiries and contact submissions
+const formSubmissionLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many form submissions from this IP. Please wait a few minutes before trying again.' },
+});
+app.use('/api/contact', formSubmissionLimiter);
+app.use('/api/inquiry', formSubmissionLimiter);
+
+// 4. Rate limiter for visitor analytics to prevent artificial count inflation
+const visitLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many visitor requests.' },
+});
+app.use('/api/settings/visit', visitLimiter);
 
 // ── Body parsing ─────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));

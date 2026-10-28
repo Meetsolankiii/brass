@@ -39,7 +39,8 @@ export default function ContactSection() {
 
   const contactItems = [
     { icon: MapPin, label: 'Address', value: settings?.contact_address, href: null },
-    { icon: Phone, label: 'Phone', value: settings?.contact_phone, href: `tel:${settings?.contact_phone}` },
+    { icon: Phone, label: settings?.contact_phone_alt ? 'Primary Phone' : 'Phone', value: settings?.contact_phone, href: `tel:${settings?.contact_phone}` },
+    ...(settings?.contact_phone_alt ? [{ icon: Phone, label: 'Secondary Phone', value: settings?.contact_phone_alt, href: `tel:${settings?.contact_phone_alt}` }] : []),
     { icon: Mail, label: 'Email', value: settings?.contact_email, href: `mailto:${settings?.contact_email}` },
     { icon: ShieldCheck, label: 'GSTIN', value: settings?.gst_number || '24ATFPN6016R1Z9', href: null },
     { icon: Clock, label: 'Business Hours', value: settings?.contact_hours, href: null },
@@ -92,21 +93,21 @@ export default function ContactSection() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                       <label className="form-label">Full Name *</label>
-                      <input {...register('name')} className="form-input" placeholder="Your name" />
+                      <input {...register('name')} className="form-input" placeholder="Enter your full name" />
                       {errors.name && <p className="form-error">{errors.name.message}</p>}
                     </div>
                     <div>
                       <label className="form-label">Email *</label>
-                      <input {...register('email')} type="email" className="form-input" placeholder="your@email.com" />
+                      <input {...register('email')} type="email" className="form-input" placeholder="Enter your email address" />
                       {errors.email && <p className="form-error">{errors.email.message}</p>}
                     </div>
                     <div>
                       <label className="form-label">Phone</label>
-                      <input {...register('phone')} className="form-input" placeholder="+91 98765 43210" />
+                      <input {...register('phone')} className="form-input" placeholder="Enter your phone number" />
                     </div>
                     <div>
                       <label className="form-label">Company</label>
-                      <input {...register('company')} className="form-input" placeholder="Your company" />
+                      <input {...register('company')} className="form-input" placeholder="Enter company name (optional)" />
                     </div>
                   </div>
                   <div>

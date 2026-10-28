@@ -35,11 +35,11 @@ const GROUPS = [
   },
   {
     group: 'contact', label: 'Contact Info', fields: [
-      { key: 'contact_address', label: 'Address', type: 'textarea', placeholder: '123 Industrial Area, Phase II\nNew Delhi, 110020' },
-      { key: 'contact_phone', label: 'Primary Phone', type: 'text', placeholder: '+91 98765 43210' },
-      { key: 'contact_phone_alt', label: 'Secondary Phone', type: 'text' },
+      { key: 'contact_address', label: 'Address', type: 'textarea', placeholder: 'Khimaliya Village, Jamnagar, Gujarat – 361120' },
+      { key: 'contact_phone', label: 'Primary Phone', type: 'text', placeholder: '+91 93271 74035' },
+      { key: 'contact_phone_alt', label: 'Secondary Phone', type: 'text', placeholder: '+91 63511 30911' },
       { key: 'whatsapp_number', label: 'WhatsApp Number (With country code, no + or spaces, e.g. 919924464511)', type: 'text', placeholder: '919924464511' },
-      { key: 'contact_email', label: 'Primary Email', type: 'text', placeholder: 'info@yourcompany.com' },
+      { key: 'contact_email', label: 'Primary Email', type: 'text', placeholder: 'bhaveshnakum802@gmail.com' },
       { key: 'contact_email_support', label: 'Support Email', type: 'text' },
       { key: 'contact_hours', label: 'Business Hours', type: 'textarea', placeholder: 'Monday – Saturday: 9:00 AM – 6:00 PM' },
     ],

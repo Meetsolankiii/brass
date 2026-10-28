@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Production build
+*.tsbuildinfo
+
+# Environment variables & secrets (NEVER commit to git)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# System
+.DS_Store
+Thumbs.db

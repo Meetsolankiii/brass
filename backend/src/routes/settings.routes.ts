@@ -15,7 +15,7 @@ const router = Router();
 
 // Visitor tracking & stats
 router.post('/visit', recordVisit);
-router.get('/stats/visits', getVisitStats);
+router.get('/stats/visits', authenticate, requireAdmin, getVisitStats);
 router.post('/reset-visits', authenticate, requireAdmin, resetVisitCount);
 
 // Settings

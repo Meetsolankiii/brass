@@ -178,7 +178,7 @@ export default function Navbar() {
               className="flex items-center gap-2 text-gray-700 hover:text-primary-600 text-sm font-medium transition-colors"
             >
               <Phone size={15} className="shrink-0 text-primary-600" />
-              <span>{settingsData?.contact_phone || '+91 98765 43210'}</span>
+              <span>{settingsData?.contact_phone || '+91 93271 74035'}</span>
             </a>
             <Link
               to="/contact"
