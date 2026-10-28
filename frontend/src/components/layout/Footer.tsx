@@ -167,8 +167,8 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-dark-700">
-        <div className="container-xl py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="container-xl py-5 flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
             <span>
               <span
                 onClick={() => navigate('/owner/login')}
@@ -181,7 +181,20 @@ export default function Footer() {
             <span className="text-dark-500 hidden sm:inline">•</span>
             <span className="text-gray-400 font-mono">GSTIN: {settings?.gst_number || '24ATFPN6016R1Z9'}</span>
           </div>
-          <div className="flex gap-4">
+
+          <div className="text-gray-400 text-center">
+            Designed & Developed by{' '}
+            <a
+              href="https://www.linkedin.com/in/rnakum"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-300 hover:text-accent-DEFAULT font-medium transition-colors underline-offset-4 hover:underline"
+            >
+              Rajnish Nakum
+            </a>
+          </div>
+
+          <div className="flex items-center gap-4">
             <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link to="/terms-and-conditions" className="hover:text-white transition-colors">Terms & Conditions</Link>
           </div>
